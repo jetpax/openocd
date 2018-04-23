@@ -271,8 +271,8 @@ struct command_context *setup_command_handler(Jim_Interp *interp)
 	}
 	LOG_DEBUG("command registration: complete");
 
-	LOG_OUTPUT(OPENOCD_VERSION "\n"
-		"Licensed under GNU GPL v2\n");
+	//LOG_OUTPUT(OPENOCD_VERSION "\n"
+	//	"Licensed under GNU GPL v2\n");
 
 	global_cmd_ctx = cmd_ctx;
 
@@ -343,9 +343,9 @@ int openocd_main(int argc, char *argv[])
 	if (ioutil_init(cmd_ctx) != ERROR_OK)
 		return EXIT_FAILURE;
 
-	LOG_OUTPUT("For bug reports, read\n\t"
-		"http://openocd.org/doc/doxygen/bugs.html"
-		"\n");
+	//LOG_OUTPUT("For bug reports, read\n\t"
+	//	"http://openocd.org/doc/doxygen/bugs.html"
+	//	"\n");
 
 	command_context_mode(cmd_ctx, COMMAND_CONFIG);
 	command_set_output_handler(cmd_ctx, configuration_output_handler, NULL);

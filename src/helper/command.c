@@ -361,7 +361,7 @@ static int register_command_handler(struct command_context *cmd_ctx,
 	if (NULL == ocd_name)
 		return JIM_ERR;
 
-	LOG_DEBUG("registering '%s'...", ocd_name);
+	//LOG_DEBUG("registering '%s'...", ocd_name);
 
 	Jim_CmdProc *func = c->handler ? &script_command : &command_unknown;
 	int retval = Jim_CreateCommand(interp, ocd_name, func, c, NULL);
