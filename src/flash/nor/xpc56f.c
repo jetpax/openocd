@@ -8,6 +8,13 @@
 
 #include "target/xpc56.h"
 
+#ifndef MIN
+#define MIN(a, b) (((a) < (b)) ? (a) : (b))
+#endif
+#ifndef MAX
+#define MAX(a, b) (((a) > (b)) ? (a) : (b))
+#endif
+
 
 #define CFLASH0_BASE	0x0
 #define CFLASH0_CONF	0xC3F88000
@@ -65,18 +72,36 @@ static int xpc56f_protect(struct flash_bank *bank, int set, int first, int last)
 		// todo: manage high address space
 		uint32_t lml = xpc56_read_u32(target, conf + 0x4);
 		uint32_t sll = xpc56_read_u32(target, conf + 0xC);
+		
+        // bug somewhere! WA here    
+        lml = xpc56_read_u32(target, conf + 0x4);
+
 
 		printf("protect change %08x %08x -- %04x\n", lml, sll, change);
 
 		if ((lml & BIT(31)) == 0 || (sll & BIT(31)) == 0) {
+			// Write passwords
 			xpc56_write_u32(target, conf + 0x4, 0xa1a11111);
 			xpc56_write_u32(target, conf + 0xC, 0xc3c33333);
 		}
 
+		if (set) {
+			lml |= change;
+			sll |= change;
+		} else {
+			lml &= ~change;
+			sll &= ~change;
+		}
+
+		//lml = 0;
+		//sll = 0;
+
 		// write same lml based value in both registers
-		xpc56_write_u32(target, conf + 0x4, lml ^ change);
-		xpc56_write_u32(target, conf + 0xC, lml ^ change);
+		xpc56_write_u32(target, conf + 0x4, lml);
+		xpc56_write_u32(target, conf + 0xC, sll);
 	}
+
+	//exit(0);
 
 	return ERROR_OK;
 }
@@ -131,49 +156,110 @@ static int xpc56f_erase(struct flash_bank *bank, int first, int last)
 
 static int xpc56f_write(struct flash_bank *bank, const uint8_t *buffer, uint32_t offset, uint32_t count)
 {
-	#if 0
 	struct target *target = bank->target;
-	struct xpc56_common *xpc56 = target->arch_info;
-	uint32_t cur_size, cur_buffer_size, page_size;
-
-	if (bank->target->state != TARGET_HALTED) {
+	if (target->state != TARGET_HALTED) {
 		LOG_ERROR("Target not halted");
 		return ERROR_TARGET_NOT_HALTED;
 	}
 
-	page_size = bank->sectors[0].size;
-	if ((offset % page_size) != 0) {
-		LOG_WARNING("offset 0x%" PRIx32 " breaks required %" PRIu32 "-byte alignment",
-			offset,
-			page_size);
-		return ERROR_FLASH_DST_BREAKS_ALIGNMENT;
+	const uint32_t *buffer_wa = (uint32_t *)buffer;
+
+	int sect_first = -1;
+	int sect_last = -1;
+
+	// compute first and last sect to unprotect -- assume sectors sorted
+	for (int i = 0;; i++) {
+		assert(i < bank->num_sectors);
+		struct flash_sector *sect = bank->sectors + i;
+
+		// we could check more precisley buffer content != 0xFF
+		if (sect_first == -1 && sect->offset <= offset && offset < sect->offset + sect->size)
+			sect_first = i;
+
+		if (sect_last == -1 && offset + count <= sect->offset + sect->size) {
+			sect_last = i;
+			break;
+		}
 	}
 
-	LOG_DEBUG("offset is 0x%08" PRIx32 "", offset);
-	LOG_DEBUG("count is %" PRId32 "", count);
+	xpc56f_protect(bank, 0, sect_first, sect_last);
 
-	if (ERROR_OK != xpc56_jtagprg_enterprogmode(xpc56))
-		return ERROR_FAIL;
+	uintptr_t conf = (uintptr_t)bank->driver_priv;
 
-	cur_size = 0;
-	while (count > 0) {
-		if (count > page_size)
-			cur_buffer_size = page_size;
-		else
-			cur_buffer_size = count;
-		xpc56_jtagprg_writeflashpage(xpc56,
-			buffer + cur_size,
-			cur_buffer_size,
-			offset + cur_size,
-			page_size);
-		count -= cur_buffer_size;
-		cur_size += cur_buffer_size;
+	printf("RD 00  %08x\n", xpc56_read_u32(target, conf));
+	printf("RD 04  %08x\n", xpc56_read_u32(target, conf+4));
+	printf("RD 0C  %08x\n", xpc56_read_u32(target, conf+0xC));
+	printf("RD 10  %08x\n", xpc56_read_u32(target, conf+0x10));
 
-		keep_alive();
+	xpc56_write_u32(target, conf, 0x10);		// select pgm op
+
+	for (int i = 0; count; i++) {
+		assert(i < bank->num_sectors);
+		struct flash_sector *sect = bank->sectors + i;
+
+		if (sect->offset <= offset && offset < sect->offset + sect->size) {
+			uint32_t sect_offset = offset - sect->offset;
+			uint32_t sect_size = MIN(sect->size - sect_offset, count);
+
+			printf("W %x [%d] %x %x (%d)\n", bank->base, i, sect->offset, sect_offset, sect_size);
+			for (unsigned j = 0; j < sect_size ; j += sizeof(uint64_t))
+			{
+				uint64_t dw = 0;
+				unsigned k = 0;
+				for (;k < sizeof(uint64_t) && j + k < sect_size ; k += 1) {
+					dw <<= 8;
+					dw |= buffer[sect_offset + j + k];
+				}
+				for (;k < sizeof(uint64_t) ; k += 1) {
+					dw <<= 8;
+					dw |= 0xFF;
+				}
+
+				// todo: manage non aligned starting offset
+				assert( ((bank->base + sect_offset + j) & 7) == 0);
+				if (dw != -1ULL) {
+
+					xpc56_write_u32(target, bank->base + sect_offset + j, dw >> 32);		    // load first word to write
+					xpc56_write_u32(target, bank->base + sect_offset + j + 4, dw & 0xFFFFFFFF);	// load second word to write
+
+					xpc56_write_u32(target, conf, 0x11);		// start prog
+
+					uint32_t mcr;
+					uint32_t cnt = 0;
+					do {
+						mcr = xpc56_read_u32(target, conf);	// check end
+					} while ((mcr & 0x400) == 0 && cnt++ < 10000);
+					assert(mcr & 0x200 && cnt < 10000); // check PEG set
+					xpc56_write_u32(target, conf, 0x10);		// end prog, but keep prog mode
+				}
+			}
+
+			count -= sect_size;
+			offset += sect_size;
+			buffer += sect_size;
+		}
 	}
 
-	return xpc56_jtagprg_leaveprogmode(xpc56);
-	#endif
+    // bug again somewhere! must rewrite 2 first words
+	{
+		xpc56_write_u32(target, 0, ntohl(buffer_wa[0]));	// load first word to write
+		xpc56_write_u32(target, 4, ntohl(buffer_wa[1]));	// load second word to write
+
+		xpc56_write_u32(target, conf, 0x11);		// start prog
+
+		uint32_t mcr;
+		uint32_t cnt = 0;
+		do {
+			mcr = xpc56_read_u32(target, conf);	// check end
+		} while ((mcr & 0x400) == 0 && cnt++ < 10000);
+		assert(mcr & 0x200 && cnt < 10000); // check PEG set
+		xpc56_write_u32(target, conf, 0x10);		// end prog, but keep prog mode
+
+	}
+
+	xpc56_write_u32(target, conf, 0x0);		// unselect pgm op
+
+
 	return ERROR_OK;
 }
 
@@ -206,29 +292,27 @@ static int xpc56f_probe(struct flash_bank *bank)
 	if (bank->size)
 		return ERROR_OK;
 
-	uintptr_t addr;
+	uintptr_t conf;
 	if (bank->base == CFLASH0_BASE)
-		addr = CFLASH0_CONF;
+		conf = CFLASH0_CONF;
 	else if (bank->base == DFLASH0_BASE)
-		addr = DFLASH0_CONF;
+		conf = DFLASH0_CONF;
 	else {
 		LOG_ERROR("Base address not matching known configurations");
 		return ERROR_FLASH_BANK_INVALID;
 	}
-	// member highjacking
-	bank->driver_priv = (void*) addr;
+	// member hijacking
+	bank->driver_priv = (void*) conf;
 
-	uint32_t mcr = xpc56_read_u32(target, addr);
+	uint32_t reg_mcr = xpc56_read_u32(target, conf);
+	uint32_t reg_lml = xpc56_read_u32(target, conf + 0x4);
+	uint32_t reg_sll = xpc56_read_u32(target, conf + 0xC);
+
 	// total bank size in kb
 	const uint16_t MCR_SIZE[] = {128, 256, 512, 1024, 1536, 2048, 64, 96 };
-	bank->size = MCR_SIZE[(mcr >> 24) & 7] * 1024;
+	bank->size = MCR_SIZE[(reg_mcr >> 24) & 7] * 1024;
 
-	printf("MCR %08x   %d   %d \n", mcr, (mcr >> 24) & 7, bank->size);
-
-	mcr = xpc56_read_u32(target, addr);
-	printf("MCR %08x   %d   %d \n", mcr, (mcr >> 24) & 7, bank->size);
-	mcr = xpc56_read_u32(target, addr);
-	printf("MCR %08x   %d   %d \n", mcr, (mcr >> 24) & 7, bank->size);
+	printf("MCR %08x   %d   %08x (%d) \n", reg_mcr, (reg_mcr >> 24) & 7, bank->base, bank->size);
 
 	// sector cfg in kb for low address space, 0-terminated
 	const uint8_t MCR_LAS[][9] = {
@@ -241,18 +325,20 @@ static int xpc56f_probe(struct flash_bank *bank)
 		{16, 16, 16, 16, 0},
 		{16, 16, 32, 32, 16, 16, 64, 64, 0},
 	};
-	const uint8_t *las = MCR_LAS[(mcr >> 20) & 7];
+	const uint8_t *las = MCR_LAS[(reg_mcr >> 20) & 7];
 	while (las[bank->num_sectors])
 		bank->num_sectors++;
 
 	bank->sectors = malloc(sizeof(struct flash_sector) * bank->num_sectors);
 	uint32_t offset = 0;
 	for (int i = 0; i < bank->num_sectors; i++) {
-		bank->sectors[i].offset = offset;
-		bank->sectors[i].size = las[i] * 1024;
-		offset += bank->sectors[i].size;
-		bank->sectors[i].is_erased = -1;
-		bank->sectors[i].is_protected = 1;
+		struct flash_sector *sect = bank->sectors + i;
+		sect->offset = offset;
+		sect->size = las[i] * 1024;
+		offset += sect->size;
+		sect->is_erased = -1;
+		sect->is_protected = ((reg_lml | reg_sll) >> i) & 1;
+		printf("   sect[%d] %08x (%d) \n", i, sect->offset, sect->size);
 	}
 
 	// todo: add support for mid and high address space cfg
