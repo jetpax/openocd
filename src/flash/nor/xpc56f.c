@@ -44,11 +44,32 @@ FLASH_BANK_COMMAND_HANDLER(xpc56f_flash_bank_command)
 	return ERROR_OK;
 }
 
+static int xpc56f_protect_check(struct flash_bank *bank)
+{
+	LOG_INFO(WHITE "%s" OFF, __func__);
+
+	struct target *target = bank->target;
+	uintptr_t conf = (uintptr_t)bank->driver_priv;
+
+	uint32_t reg_lml = xpc56_read_u32(target, conf + 0x4);
+	uint32_t reg_sll = xpc56_read_u32(target, conf + 0xC);
+
+	for (int i = 0; i < bank->num_sectors; i++) {
+		struct flash_sector *sect = bank->sectors + i;
+		sect->is_protected = ((reg_lml | reg_sll) >> i) & 1;
+	}
+	return ERROR_OK;
+}
+
 static int xpc56f_protect(struct flash_bank *bank, int set, int first, int last)
 {
 	LOG_INFO("%s", __func__);
-	set = !!set;
 
+	int r = xpc56f_protect_check(bank);
+	if (r != ERROR_OK)
+		return r;
+
+	set = !!set;
 	assert(last < bank->num_sectors);
 
 	struct target *target = bank->target;
@@ -72,10 +93,9 @@ static int xpc56f_protect(struct flash_bank *bank, int set, int first, int last)
 		// todo: manage high address space
 		uint32_t lml = xpc56_read_u32(target, conf + 0x4);
 		uint32_t sll = xpc56_read_u32(target, conf + 0xC);
-		
-        // bug somewhere! WA here    
-        lml = xpc56_read_u32(target, conf + 0x4);
 
+		// bug somewhere! WA here
+		lml = xpc56_read_u32(target, conf + 0x4);
 
 		printf("protect change %08x %08x -- %04x\n", lml, sll, change);
 
@@ -266,11 +286,6 @@ static int xpc56f_write(struct flash_bank *bank, const uint8_t *buffer, uint32_t
 static int xpc56f_probe(struct flash_bank *bank)
 {
 	struct target *target = bank->target;
-	//struct xpc56f_flash_bank *xpc56f_info = bank->driver_priv;
-	//struct xpc56_common *xpc56 = target->arch_info;
-	//const struct xpc56f_type *xpc56_info = NULL;
-	//int i;
-	//uint32_t device_id;
 
 	if (target->state != TARGET_HALTED) {
 		LOG_ERROR("Target not halted");
@@ -344,7 +359,16 @@ static int xpc56f_probe(struct flash_bank *bank)
 	// todo: add support for mid and high address space cfg
 	assert(offset == bank->size);
 
+	int r = xpc56f_protect_check(bank);
+	if (r != ERROR_OK)
+		return r;
+
 	return ERROR_OK;
+}
+
+void xpc56f_flash_free_driver_priv(struct flash_bank *bank)
+{
+	bank->driver_priv = NULL;
 }
 
 static int xpc56f_auto_probe(struct flash_bank *bank)
@@ -354,12 +378,6 @@ static int xpc56f_auto_probe(struct flash_bank *bank)
 		return ERROR_OK;
 	else
 		return xpc56f_probe(bank);
-}
-
-static int xpc56f_protect_check(struct flash_bank *bank)
-{
-	LOG_INFO("%s", __func__);
-	return ERROR_OK;
 }
 
 static int xpc56f_info(struct flash_bank *bank, char *buf, int buf_size)
@@ -416,4 +434,5 @@ struct flash_driver xpc56_flash = {
 	.erase_check = default_flash_blank_check,
 	.protect_check = xpc56f_protect_check,
 	.info = xpc56f_info,
+	.free_driver_priv = xpc56f_flash_free_driver_priv,
 };

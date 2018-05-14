@@ -6,6 +6,7 @@
 #include "log.h"
 #include "target.h"
 #include "target_type.h"
+#include "register.h"
 
 #include "binarybuffer.h"
 #include "jtag/jtag.h"
@@ -85,8 +86,27 @@
 #define E200_OP_E_STW(rs)	(0x54000000 | ((rs)<<21) | ((0)<<16) | (0))
 
 
+static const struct  {
+	char* name;
+	uint32_t spr_idx;
+} xpc56_reg_const[] = {
+	{ "PC",	 0, },
+	{ "CR",  0, },
+	{ "CTR", 9, },
+	{ "LR",  8, },
+	{ "XER", 1, },
+	{ "MSR", 0, },
+};
 
-//
+#define REG_GP_CNT 32
+#define REG_PC_IDX 32
+#define REG_CR_IDX 33
+#define REG_CTR_IDX 34
+#define REG_LR_IDX 35
+#define REG_XER_IDX 35
+#define REG_MSR_IDX 36
+
+#define REG_CNT (REG_GP_CNT + ARRAY_SIZE(xpc56_reg_const))
 
 
 // STRUCTS
@@ -96,18 +116,19 @@ struct xpc56 {
 	uint8_t		jtagc_ir;
 	uint16_t	e200_ir;
 	bool		debugging;
+	// Scan chain is { WBBR_low, WBBR_high, MSR, PC, IR, CTL }
 	uint32_t	cpuscr_save[6];
 
-	uint32_t	gpr_save[REG_SAVE_CNT];
 	bool		nexus2;
 	uint32_t	xpc56_id;
 	uint32_t	e200_id;
 };
 
 
+
 // DECL
 static void xpc56_jtagc_reset(struct target *target);
-
+static uint32_t xpc56_cpuscr_reg(struct target *target, uint32_t reg, bool write, uint32_t val);
 
 // DEFS
 int xpc56_arch_state(struct target *target) { MMM return ERROR_OK; }
@@ -135,57 +156,101 @@ static struct xpc56 *xpc56_info(struct target *target)
 	return (struct xpc56*) target->arch_info;
 }
 
+
+
+int xpc56_get_core_reg(struct reg *reg)
+{
+	if (reg->number < REG_GP_CNT) {
+		*(uint32_t*) (reg->value) = xpc56_cpuscr_reg(reg->arch_info, reg->number, false, 0);
+
+		printf("RR %2d : %x\n", reg->number, *(uint32_t*) (reg->value));
+		reg->valid = true;
+		//reg->dirty = false;
+
+		return ERROR_OK;
+
+	} else if (reg->number == REG_MSR_IDX || reg->number == REG_PC_IDX) {
+		return ERROR_OK;
+
+	} else {
+		return ERROR_FAIL;
+	}
+}
+
+int xpc56_set_core_reg(struct reg *reg, uint8_t *buf)
+{
+	if (buf) {
+		*(uint32_t*) (reg->value) = *(uint32_t*) buf;
+		reg->valid = true;
+	}
+
+	if (reg->number < REG_GP_CNT && reg->valid) {
+		//printf("RW %2d : %x\n", reg->number, *(uint32_t*) (reg->value));
+		xpc56_cpuscr_reg(reg->arch_info, reg->number, true, *(uint32_t*) (reg->value));
+		reg->dirty = false;
+
+		return ERROR_OK;
+	} else {
+		printf("RW %2d : inv!!! %d %x\n", reg->number, reg->valid, *(uint32_t*) (reg->value));
+		return ERROR_FAIL;
+	}
+}
+
+static const struct reg_arch_type xpc56_reg_type = {
+	.get = xpc56_get_core_reg,
+	.set = xpc56_set_core_reg,
+};
+
+
 int xpc56_target_create(struct target *target, Jim_Interp *interp)
 {
 	MMM
 	struct xpc56 *info  = calloc(1, sizeof(struct xpc56));
 	target->arch_info = info;
 
-	#if 0
+	#if 1
 	struct reg_cache *cache = malloc(sizeof(struct reg_cache));
-	target->reg_cache = cache
-
-	 = calloc
-	"GPR", "PC", "LR", "CR", "CTR", "XER", "MSR"
+	target->reg_cache = cache;
 
 
-	/* Build the process context cache */
 	cache->name = "PPC E200 registers";
 	cache->next = NULL;
+	cache->num_regs = REG_CNT;
+	struct reg *reg_list = calloc(REG_CNT, sizeof(struct reg));
+	uint32_t *reg_values = calloc(REG_CNT, sizeof(uint32_t));
+	char *reg_names = calloc(REG_GP_CNT, 6); // for string "GPR%d"
 	cache->reg_list = reg_list;
-	cache->num_regs = 32 + 6;
-	struct reg *reg_list = calloc(cache->num_regs, sizeof(struct reg));
+	//struct xpc56_reg *reg_info = calloc(REG_CNT, sizeof(struct xpc56_reg));
 
-
-
-	struct reg_arch_type {
-		int (*get)(struct reg *reg);
-		int (*set)(struct reg *reg, uint8_t *buf);
-	};
-
-	for (i = 0; i < cache->num_regs; i++) {
+	for (unsigned i = 0; i < REG_CNT; i++) {
 		reg_list[i].number = i;
-		reg_list[i].name = NULL; //TODO
 		reg_list[i].size = 32;
-		reg_list[i].value = //TODO
+		reg_list[i].value = reg_values + i;
 		reg_list[i].dirty = false;
 		reg_list[i].valid = false;
-		reg_list[i].arch_info = info;
-
-		reg_list[i].type = &armv7m_reg_type;
-
 		reg_list[i].exist = true;
-		reg_list[i].caller_save = true;	// ?
-
-		reg_list[i].feature = NULL; //?
+		reg_list[i].arch_info = target;
+		reg_list[i].type = &xpc56_reg_type;
+		reg_list[i].caller_save = true;
+		reg_list[i].feature = NULL;
 		reg_list[i].reg_data_type = NULL;
 		reg_list[i].group = NULL;
+		if (i < REG_GP_CNT) {
+			snprintf(reg_names + 6*i, 6, "GPR%d", i); //TODO
+			reg_list[i].name = reg_names + 6*i;
+		} else {
+			reg_list[i].name = xpc56_reg_const[i - REG_GP_CNT].name;
+		}
 	}
-
 	#endif
+
+	target->reg_cache->reg_list[REG_MSR_IDX].value = info->cpuscr_save + 2;
+	target->reg_cache->reg_list[REG_PC_IDX].value = info->cpuscr_save + 3;
 
 	return ERROR_OK;
 }
+
+
 
 int xpc56_init_target(struct command_context *cmd_ctx, struct target *target)
 {
@@ -200,13 +265,21 @@ int xpc56_init_target(struct command_context *cmd_ctx, struct target *target)
 
 void xpc56_deinit_target(struct target *target)
 {
-	MMM
+
+	struct reg_cache *cache = target->reg_cache;
+
+	if (!cache)
+		return;
+	free(cache->reg_list[0].value);
+	free((void*)cache->reg_list[0].name);
+	free(cache->reg_list);
+	free(cache);
+	target->reg_cache = NULL;
 
 }
 
 static void xpc56_jtagc_reset(struct target *target)
 {
-	MMM
 	jtag_add_statemove(TAP_DRPAUSE);
 	jtag_add_statemove(TAP_IDLE);
 
@@ -234,7 +307,7 @@ static uint8_t xpc56_jtagc_ir_rw(struct target *target, uint8_t val)
 	field.in_value = &buf_in;
 	jtag_add_ir_scan(target->tap, &field, TAP_IDLE);
 	CHECK_RETVAL(jtag_execute_queue());
-
+	//MMM
 	info->jtagc_ir = val;
 
 	return buf_in;
@@ -259,6 +332,7 @@ static uint16_t xpc56_e200_ir_rw(struct target *target, uint16_t val)
 	field.in_value = buf_in;
 	jtag_add_ir_scan(target->tap, &field, TAP_IDLE);
 	CHECK_RETVAL(jtag_execute_queue());
+	//MMM
 
 	xpc56_info(target)->e200_ir = val;
 
@@ -278,6 +352,7 @@ static uint32_t xpc56_dr_rw(struct target *target, int size, uint64_t val)
 	field.in_value = buf_in;
 	jtag_add_dr_scan(target->tap, 1, &field, TAP_IDLE);
 	CHECK_RETVAL(jtag_execute_queue());
+	//MMM
 
 	return buf_get_u64(buf_in, 0, size);
 }
@@ -355,11 +430,13 @@ static int xpc56_cpuscr(struct target *target, bool write, uint32_t *data)
 	struct scan_field field = { 32 * 6, (uint8_t*)data, (uint8_t*)data, NULL, NULL};
 	jtag_add_dr_scan(target->tap, 1, &field, TAP_IDLE);
 	CHECK_RETVAL(jtag_execute_queue());
+
 	return ERROR_OK;
 }
 
 static uint32_t xpc56_cpuscr_exec(struct target *target, uint32_t inst, bool ffra, uint32_t *wbbrl)
 {
+	// Scan chain is { WBBR_low, WBBR_high, MSR, PC, IR, CTL }
 	// Other debuggers using PC 0xFFFFc000 (BAM ROM code)
 	uint32_t scan[6] = { wbbrl? *wbbrl : 0, 0, 0, 0, inst, BIT(1) | (ffra? BIT(10) : 0)};
 
@@ -378,11 +455,14 @@ static uint32_t xpc56_cpuscr_exec(struct target *target, uint32_t inst, bool ffr
 		return ERROR_OK;
 }
 
-static uint32_t xpc56_cpuscr_reg(struct target *target, uint32_t reg, bool write, uint32_t val)
+// R or W GP registers
+static uint32_t xpc56_cpuscr_reg(struct target *target, uint32_t reg, bool write, uint32_t wval)
 {
-	uint32_t data = val;
-	xpc56_cpuscr_exec(target, E200_OP_ORI(reg), write, &data);
-	return data;
+	uint32_t rwval = wval;
+	xpc56_cpuscr_exec(target, E200_OP_ORI(reg), write, &rwval);
+	target->reg_cache->reg_list[reg].dirty = true;
+
+	return rwval;
 }
 
 static int xpc56_cpuscr_memr(struct target *target, target_addr_t address, uint32_t size, uint32_t count, uint8_t *buffer)
@@ -398,6 +478,7 @@ static int xpc56_cpuscr_memr(struct target *target, target_addr_t address, uint3
 	// Not sure if this is compliant with openocd. To change this behavior, we can use byte reversing load/store opcodes lhbrx/lwbrx
 
 	uint32_t inst[] = {0, E200_OP_E_LBZ(1), E200_OP_E_LHZ(1), 0, E200_OP_E_LWZ(1)};
+	target->reg_cache->reg_list[1].dirty = true;
 
 	for (uint32_t i = 0; i < count; i++) {
 		uint32_t data = address;
@@ -411,6 +492,8 @@ static int xpc56_cpuscr_memr(struct target *target, target_addr_t address, uint3
 		address += size;
 		buffer += size;
 	}
+
+	//printf(" ...read (if 4 1!) 0x%x\n", *(uint32_t*) (buffer-size));
 	return ERROR_OK;
 }
 
@@ -419,6 +502,7 @@ static int xpc56_cpuscr_memw(struct target *target, target_addr_t address, uint3
 	assert(size == 1 || size == 2 ||size == 4);
 
 	uint32_t inst[] = {0, E200_OP_E_STB(1), E200_OP_E_STH(1), 0, E200_OP_E_STW(1)};
+	target->reg_cache->reg_list[1].dirty = true;
 	uint32_t address2 = address;
 
 	for (uint32_t i = 0; i < count; i++) {
@@ -431,13 +515,48 @@ static int xpc56_cpuscr_memw(struct target *target, target_addr_t address, uint3
 	return ERROR_OK;
 }
 
+
+static int xpc56_save_all(struct target *target)
+{
+	struct xpc56 *info = target->arch_info;
+
+	xpc56_cpuscr(target, false, info->cpuscr_save);
+	target->reg_cache->reg_list[REG_MSR_IDX].valid = true;
+	target->reg_cache->reg_list[REG_PC_IDX].valid = true;
+
+	// memory barrier
+	xpc56_cpuscr_exec(target, E200_OP_SYNC(), false, NULL);
+
+	for (int i = 0; i < REG_GP_CNT; i++)
+		xpc56_get_core_reg(target->reg_cache->reg_list + i);
+
+	// we will use gpr0 as 0 and gpr1 as scratch for the debug session
+	xpc56_cpuscr_reg(target, 0, true, 0);
+
+	return ERROR_OK;
+}
+
+static int xpc56_restore_all(struct target *target)
+{
+	struct xpc56 *info = target->arch_info;
+
+	for (int i = 0; i < 32; i++)
+		if (target->reg_cache->reg_list[i].dirty)
+			xpc56_set_core_reg(target->reg_cache->reg_list + i, NULL);
+
+	// restore cpuscr (might be bugged!!!!!!)
+	// doc says we should put a 'nop', execute it, then resore the saved data
+	xpc56_cpuscr(target, true, info->cpuscr_save);
+
+	return ERROR_OK;
+}
+
 static int xpc56_debug_enter(struct target *target)
 {
 	printf("=== DBG ENTER ===\n");
 
 	struct xpc56 *info = target->arch_info;
-	if (info->debugging == true)
-		return ERROR_OK;
+	assert(info->debugging == false);
 
 	xpc56_e200_ir_rw(target, E200_IR_EN_ONCE);
 	xpc56_e200_ir_rw(target, E200_IR_OCR);
@@ -446,35 +565,30 @@ static int xpc56_debug_enter(struct target *target)
 	xpc56_e200_ir_rw(target, E200_IR_DBCR0);
 	xpc56_dr_rw(target, 32, BIT(31));
 
-	xpc56_cpuscr(target, false, info->cpuscr_save);
+	xpc56_save_all(target);
 	info->debugging = true;
-	// memory barrier
-	xpc56_cpuscr_exec(target, E200_OP_SYNC(), false, NULL);
-	// we will use gpr0 as 0 and gpr1 as scratch for the debug session
-	for (int i = 0; i < REG_SAVE_CNT; i++)
-		info->gpr_save[i] = xpc56_cpuscr_reg(target, i, false, 0);
-	xpc56_cpuscr_reg(target, 0, true, 0);
 
 	return ERROR_OK;
 }
+
+
+
 
 static int xpc56_debug_exit(struct target *target)
 {
 	struct xpc56 *info = target->arch_info;
 	assert(info->debugging);
 
-	for (int i = 0; i < REG_SAVE_CNT; i++)
-		xpc56_cpuscr_reg(target, i, true, info->gpr_save[i]);
-
-	// restore cpuscr (might be bugged!!!!!!)
-	// doc says we should put a 'nop', execute it, then resore the saved data
-	xpc56_cpuscr(target, true, info->cpuscr_save);
+	xpc56_restore_all(target);
 
 	xpc56_e200_ir_rw(target, E200_IR_OCR);
 	xpc56_dr_rw(target, 32, 0);
 
 	xpc56_e200_ir_rw(target, E200_IR_EX | E200_IR_GO | E200_IR_NOREG);
 	xpc56_dr_rw(target, 1, 0);
+
+	for (unsigned i = 0; i < REG_CNT; i++)
+		target->reg_cache->reg_list[i].valid = false;
 
 	info->debugging = false;
 	printf("--- DBG EXIT ---\n");
@@ -518,7 +632,7 @@ uint32_t xpc56_read_u32(struct target *target, target_addr_t address)
 
 int xpc56_write_memory(struct target *target, target_addr_t address, uint32_t size, uint32_t count, const uint8_t *buffer)
 {
-	printf("Write mem %dx%d bytes at 0x%lx [%02x %02x %02x %02x...]\n", size, count, address, buffer[0], buffer[1], buffer[2], buffer[3]);
+	printf("Write mem %dx%d bytes at 0x%lx [%02x %02x %02x %02x...]\n", size, count, address, buffer[3], buffer[2], buffer[1], buffer[0]);
 	//fflush(stdout);
 
 	struct xpc56 *info = target->arch_info;
@@ -538,6 +652,11 @@ void xpc56_write_u32(struct target *target, target_addr_t address, uint32_t valu
 
 int xpc56_halt(struct target *target)
 {
+	struct xpc56 *info = target->arch_info;
+	if (info->debugging == true) {
+		printf("Already halted\n");
+		return ERROR_FAIL;
+	}
 	xpc56_debug_enter(target);
 	target->state = TARGET_HALTED;
 
@@ -546,12 +665,33 @@ int xpc56_halt(struct target *target)
 
 int xpc56_resume(struct target *target, int current, target_addr_t address, int handle_breakpoints, int debug_execution)
 {
+	struct xpc56 *info = target->arch_info;
+	if (info->debugging == false) {
+		printf("Already running\n");
+		return ERROR_FAIL;
+	}
 	xpc56_debug_exit(target);
 	target->state = TARGET_RUNNING;
 	return ERROR_OK;
 }
 
-int xpc56_step(struct target *target, int current, target_addr_t address, int handle_breakpoints) { MMM return ERROR_OK; }
+int xpc56_step(struct target *target, int current, target_addr_t address, int handle_breakpoints)
+{
+	struct xpc56 *info = target->arch_info;
+	if (info->debugging == false) {
+		printf("Already running\n");
+		return ERROR_FAIL;
+	}
+
+	xpc56_restore_all(target);
+
+	xpc56_e200_ir_rw(target, E200_IR_GO | E200_IR_NOREG);
+	xpc56_dr_rw(target, 1, 0);
+
+	xpc56_save_all(target);
+
+	return ERROR_OK;
+}
 
 
 int xpc56_assert_reset(struct target *target)
@@ -612,13 +752,12 @@ int xpc56_examine(struct target *target)
 	if (id == 0xffffffff)
 		return ERROR_FAIL;
 	info->xpc56_id = id;
-	printf("JTAG ID xPC56: %08x\n", info->xpc56_id);
+	//printf("JTAG ID xPC56: %08x\n", info->xpc56_id);
 	xpc56_e200_ir_rw(target, E200_IR_JTAG_ID);
 	info->e200_id = xpc56_dr_rw(target, 32, 0);
-	printf("JTAG ID e200: %08x\n", info->e200_id);
+	//printf("JTAG ID e200: %08x\n", info->e200_id);
 
 
-	printf("save\n");
 	xpc56_debug_enter(target);
 
 
@@ -641,7 +780,7 @@ int xpc56_examine(struct target *target)
 	xpc56_e200_ir_rw(target, E200_IR_RW | E200_IR_DBCR2);
 	dr = xpc56_dr_rw(target, 32, 0);
 	printf("DBCR2: %08x\n", dr);
-#endif
+//#endif
 	//for (int i = 0; i < 12; i++)
 	//	xpc56_cpuscr_exec(target, E200_OP_ORI(i), false, NULL);
 	printf("-------------------------------------\n");
@@ -669,7 +808,7 @@ int xpc56_examine(struct target *target)
 	printf("----\n");
 
 
-#if 0
+//#if 0
 	printf("----\n");
 	xpc56_read_memory(target, 0xC3F90004, 2, 4, buffer);
 	printf("MIDR8 %02x %02x %02x %02x  %02x %02x %02x %02x\n", buffer[0], buffer[1], buffer[2], buffer[3], buffer[4], buffer[5], buffer[6], buffer[7]);
@@ -701,10 +840,10 @@ int xpc56_examine(struct target *target)
 	printf("----\n");
 #endif
 
+	#if 0
 	printf("CF MTR----\n");
 	xpc56_read_memory(target, 0xC3F88000, 4, 4, (uint8_t*)buf);
 	printf("mem %08x %08x %08x %08x\n", buf[0], buf[1], buf[2], buf[3]);
-	#if 0
 
 
 	buf[0] = 0xA1A11111;
