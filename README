@@ -1,3 +1,32 @@
+
+OpenOCD fork for xPC56 chips / PPC e200z0 CPUs
+==============================================
+(original OpenOCD README below)
+
+This fork is intended to support the STMicroelectronics SPC56xxx and Freescale/NXP MPC56xx family of chips running on the PowerPC e200zx CPUs.
+
+Development is still in progress and not really useable yet for real projects.
+
+Boards used (e200z0 only):
+- SPC560D-DIS
+- xPC56xx EVB + xPC560B 100QFP minimodule
+- FT2232H jtag
+
+Additional folders:
+- _spc560d-dis_test: basic LED application for SPC560D-DIS which can be compiled with gcc for e200 VLE
+- _jtag_sniff: jtag decoder for FT2232H captures from Windows USBPcap or Linux usbmon.
+
+Flash with:
+src/openocd -f tcl/target/xpc56.cfg -c "reset halt ; flash erase_sector 0 0 last ; program _spc560d-dis_test/build/out.bin reset " 
+
+Debug with:
+src/openocd -f tcl/target/xpc56.cfg
+
+then from telnet:
+halt/resume/step/bp/reg/mdx/...
+
+-------------------- original README ---------------------
+
 Welcome to OpenOCD!
 ===================
 
