@@ -7,6 +7,7 @@
 #include "target.h"
 #include "target_type.h"
 #include "register.h"
+#include "breakpoints.h"
 
 #include "binarybuffer.h"
 #include "jtag/jtag.h"
@@ -34,7 +35,8 @@
 
 #define E200_IR_LEN		10
 
-#define E200_IR_RW		BIT(9)
+#define E200_IR_FORCE		BIT(31)	// not a real bit, used internally
+#define E200_IR_RW		BIT(9)	// means read access!
 #define E200_IR_GO		BIT(8)
 #define E200_IR_EX 		BIT(7)
 #define E200_IR_JTAG_ID		0x02
@@ -103,8 +105,8 @@ static const struct  {
 #define REG_CR_IDX 33
 #define REG_CTR_IDX 34
 #define REG_LR_IDX 35
-#define REG_XER_IDX 35
-#define REG_MSR_IDX 36
+#define REG_XER_IDX 36
+#define REG_MSR_IDX 37
 
 #define REG_CNT (REG_GP_CNT + ARRAY_SIZE(xpc56_reg_const))
 
@@ -122,6 +124,8 @@ struct xpc56 {
 	bool		nexus2;
 	uint32_t	xpc56_id;
 	uint32_t	e200_id;
+
+	uint32_t	bkpt_hw_mask;
 };
 
 
@@ -131,23 +135,16 @@ static void xpc56_jtagc_reset(struct target *target);
 static uint32_t xpc56_cpuscr_reg(struct target *target, uint32_t reg, bool write, uint32_t val);
 
 // DEFS
-int xpc56_arch_state(struct target *target) { MMM return ERROR_OK; }
+//int xpc56_arch_state(struct target *target) { MMM return ERROR_OK; }
 //int xpc56_target_request_data(struct target *target, uint32_t size, uint8_t *buffer) { MMM return ERROR_OK; }
+//int xpc56_soft_reset_halt(struct target *target) { MMM return ERROR_OK; }
+//int xpc56_get_gdb_reg_list(struct target *target, struct reg **reg_list[], int *reg_list_size, enum target_register_class reg_class) { MMM return ERROR_OK; }
 
+//int xpc56_checksum_memory(struct target *target, target_addr_t address, uint32_t count, uint32_t *checksum) { MMM return ERROR_OK; }
+//int xpc56_blank_check_memory(struct target *target, struct target_memory_check_block *blocks, int num_blocks, uint8_t erased_value) { MMM return ERROR_OK; }
+//int xpc56_run_algorithm(struct target *target, int num_mem_params, struct mem_param *mem_params, int num_reg_params, struct reg_param *reg_params, target_addr_t entry_point, target_addr_t exit_point, int timeout_ms, void *arch_info) { MMM return ERROR_OK; }
 
-int xpc56_soft_reset_halt(struct target *target) { MMM return ERROR_OK; }
-int xpc56_get_gdb_reg_list(struct target *target, struct reg **reg_list[], int *reg_list_size, enum target_register_class reg_class) { MMM return ERROR_OK; }
-
-int xpc56_checksum_memory(struct target *target, target_addr_t address, uint32_t count, uint32_t *checksum) { MMM return ERROR_OK; }
-int xpc56_blank_check_memory(struct target *target, struct target_memory_check_block *blocks, int num_blocks, uint8_t erased_value) { MMM return ERROR_OK; }
-
-int xpc56_run_algorithm(struct target *target, int num_mem_params, struct mem_param *mem_params, int num_reg_params, struct reg_param *reg_params, target_addr_t entry_point, target_addr_t exit_point, int timeout_ms, void *arch_info) { MMM return ERROR_OK; }
-
-
-int xpc56_check_reset(struct target *target) {
-	MMM
-	return ERROR_OK;
-}
+//int xpc56_check_reset(struct target *target) { MMM return ERROR_OK; }
 
 
 
@@ -163,7 +160,7 @@ int xpc56_get_core_reg(struct reg *reg)
 	if (reg->number < REG_GP_CNT) {
 		*(uint32_t*) (reg->value) = xpc56_cpuscr_reg(reg->arch_info, reg->number, false, 0);
 
-		printf("RR %2d : %x\n", reg->number, *(uint32_t*) (reg->value));
+		//printf("RR %2d : %x\n", reg->number, *(uint32_t*) (reg->value));
 		reg->valid = true;
 		//reg->dirty = false;
 
@@ -265,7 +262,6 @@ int xpc56_init_target(struct command_context *cmd_ctx, struct target *target)
 
 void xpc56_deinit_target(struct target *target)
 {
-
 	struct reg_cache *cache = target->reg_cache;
 
 	if (!cache)
@@ -275,7 +271,6 @@ void xpc56_deinit_target(struct target *target)
 	free(cache->reg_list);
 	free(cache);
 	target->reg_cache = NULL;
-
 }
 
 static void xpc56_jtagc_reset(struct target *target)
@@ -313,7 +308,7 @@ static uint8_t xpc56_jtagc_ir_rw(struct target *target, uint8_t val)
 	return buf_in;
 }
 
-static uint16_t xpc56_e200_ir_rw(struct target *target, uint16_t val)
+static uint16_t xpc56_e200_ir_rw(struct target *target, uint32_t val)
 {
 	// check that we are in OnCE aux TAP
 	xpc56_jtagc_ir_rw(target, xPC56_IR_TAP_ONCE);
@@ -321,6 +316,9 @@ static uint16_t xpc56_e200_ir_rw(struct target *target, uint16_t val)
 	// Note that we can change aux TAP but HW will remember E200 IR
 	if (xpc56_info(target)->e200_ir == val)
 		return 0;
+
+	// FORCE fake bit allows to prevent return above
+	val &= ~E200_IR_FORCE;
 
 	uint8_t	buf_out[2] = { 0 };
 	uint8_t	buf_in[2] = { 0 };
@@ -515,7 +513,6 @@ static int xpc56_cpuscr_memw(struct target *target, target_addr_t address, uint3
 	return ERROR_OK;
 }
 
-
 static int xpc56_save_all(struct target *target)
 {
 	struct xpc56 *info = target->arch_info;
@@ -532,6 +529,7 @@ static int xpc56_save_all(struct target *target)
 
 	// we will use gpr0 as 0 and gpr1 as scratch for the debug session
 	xpc56_cpuscr_reg(target, 0, true, 0);
+	//printf("PC: %08x\n", info->cpuscr_save[3]);
 
 	return ERROR_OK;
 }
@@ -544,8 +542,16 @@ static int xpc56_restore_all(struct target *target)
 		if (target->reg_cache->reg_list[i].dirty)
 			xpc56_set_core_reg(target->reg_cache->reg_list + i, NULL);
 
-	// restore cpuscr (might be bugged!!!!!!)
-	// doc says we should put a 'nop', execute it, then resore the saved data
+	// execute a 'nop' before restoring scan chain
+	xpc56_cpuscr_exec(target, E200_OP_ORI(0), false, NULL);
+
+	// Clear breakpoints events in CTL
+	info->cpuscr_save[5] &= ~0xF0;
+	// PCOFST not handled yet
+	assert((info->cpuscr_save[5] & 0xF000) == 0);
+	// PCINV not handled yet
+	assert((info->cpuscr_save[5] & 0x800) == 0);
+
 	xpc56_cpuscr(target, true, info->cpuscr_save);
 
 	return ERROR_OK;
@@ -562,6 +568,7 @@ static int xpc56_debug_enter(struct target *target)
 	xpc56_e200_ir_rw(target, E200_IR_OCR);
 	xpc56_dr_rw(target, 32, BIT(2) | BIT(1) | BIT(0));
 
+	// bug! discarding all breakpoints
 	xpc56_e200_ir_rw(target, E200_IR_DBCR0);
 	xpc56_dr_rw(target, 32, BIT(31));
 
@@ -571,18 +578,19 @@ static int xpc56_debug_enter(struct target *target)
 	return ERROR_OK;
 }
 
-
-
-
 static int xpc56_debug_exit(struct target *target)
 {
 	struct xpc56 *info = target->arch_info;
 	assert(info->debugging);
 
-	xpc56_restore_all(target);
-
 	xpc56_e200_ir_rw(target, E200_IR_OCR);
 	xpc56_dr_rw(target, 32, 0);
+
+	xpc56_restore_all(target);
+
+	// clear EDM in DCR0 (and clear DBSR first)?
+	//xpc56_e200_ir_rw(target, E200_IR_DBCR0);
+	//xpc56_dr_rw(target, 32, BIT(31));
 
 	xpc56_e200_ir_rw(target, E200_IR_EX | E200_IR_GO | E200_IR_NOREG);
 	xpc56_dr_rw(target, 1, 0);
@@ -596,24 +604,42 @@ static int xpc56_debug_exit(struct target *target)
 	return ERROR_OK;
 }
 
-
-
 int xpc56_poll(struct target *target)
 {
+	struct xpc56 *info = target->arch_info;
 	xpc56_jtagc_ir_rw(target, xPC56_IR_IDCODE);
 	uint32_t id = xpc56_dr_rw(target, 64, 0);
 
-	if (xpc56_info(target)->xpc56_id == id)
-		return ERROR_OK;
-	else
-		// reinit internal state here?
+	if (info->xpc56_id != id)
 		return ERROR_FAIL;
+
+	uint32_t osr = xpc56_e200_ir_rw(target, E200_IR_FORCE | E200_IR_RW | E200_IR_DBCR0);
+	uint32_t dbcr0 = xpc56_dr_rw(target, 32, 0);
+	xpc56_e200_ir_rw(target, E200_IR_RW | E200_IR_DBSR);
+	uint32_t dbsr = xpc56_dr_rw(target, 32, 0);
+
+	if (osr & BIT(3) && target->state != TARGET_HALTED) {
+
+		target->state = TARGET_HALTED;
+		info->debugging = true;
+		xpc56_save_all(target);
+
+		xpc56_e200_ir_rw(target, E200_IR_DBSR);
+		xpc56_dr_rw(target, 32, dbsr);
+	}
+
+	if (target->state == TARGET_HALTED) {
+		printf("osr: %03x   dbcr0: %08x  dbsr: %08x  pc:%08x  ctl:%08x\n", osr, dbcr0, dbsr, info->cpuscr_save[3], info->cpuscr_save[5]);
+	} else {
+		printf("osr: %03x   dbcr0: %08x  dbsr: %08x\n", osr, dbcr0, dbsr);
+	}
+
+	return ERROR_OK;
 }
 
 int xpc56_read_memory(struct target *target, target_addr_t address, uint32_t size, uint32_t count, uint8_t *buffer)
 {
 	//printf("Read mem %dx%d bytes at 0x%lx\n", size, count, address);
-	//fflush(stdout);
 
 	struct xpc56 *info = target->arch_info;
 	if (info->nexus2)
@@ -633,7 +659,6 @@ uint32_t xpc56_read_u32(struct target *target, target_addr_t address)
 int xpc56_write_memory(struct target *target, target_addr_t address, uint32_t size, uint32_t count, const uint8_t *buffer)
 {
 	printf("Write mem %dx%d bytes at 0x%lx [%02x %02x %02x %02x...]\n", size, count, address, buffer[3], buffer[2], buffer[1], buffer[0]);
-	//fflush(stdout);
 
 	struct xpc56 *info = target->arch_info;
 	if (info->nexus2)
@@ -733,7 +758,7 @@ int xpc56_examine(struct target *target)
 
 	uint32_t ir, dr; (void) ir, (void) dr;
 #if 0
-	// actually not tested with locked chip
+	// Enter debug password; actually not tested with locked chip
 	xpc56_e200_ir_rw(target, E200_IR_EN_ONCE);
 
 	xpc56_jtagc_ir_rw(target, xPC56_IR_CENSOR);
@@ -759,7 +784,6 @@ int xpc56_examine(struct target *target)
 
 
 	xpc56_debug_enter(target);
-
 
 #if 0
 	// actually not tested with nexus2 available
@@ -927,6 +951,78 @@ int xpc56_examine(struct target *target)
 }
 
 
+static int xpc56_breakpoint_add(struct target *target, struct breakpoint *breakpoint)
+{
+	struct xpc56 *info = target->arch_info;
+
+	if (target->state != TARGET_HALTED) {
+		LOG_WARNING("target not halted");
+		return ERROR_TARGET_NOT_HALTED;
+	}
+
+	if (breakpoint->type == BKPT_HARD) {
+		if (info->bkpt_hw_mask == 0xF || (breakpoint->length & ~1) != 0) {
+			LOG_INFO("no hardware breakpoint available/length not supported");
+			return ERROR_TARGET_RESOURCE_NOT_AVAILABLE;
+		}
+		int idx = 0;
+		while (info->bkpt_hw_mask & BIT(idx))
+			idx++;
+		info->bkpt_hw_mask |= BIT(idx);
+
+		assert(breakpoint->set == 0);
+		breakpoint->set = idx + 1;
+
+		xpc56_e200_ir_rw(target, E200_IR_IAC1 + idx);
+		xpc56_dr_rw(target, 32, breakpoint->address);
+
+		xpc56_e200_ir_rw(target, E200_IR_RW | E200_IR_DBCR0);
+		uint32_t dbcr0 = xpc56_dr_rw(target, 32, 0);
+		dbcr0 |= BIT(23 - idx);
+		xpc56_e200_ir_rw(target, E200_IR_DBCR0);
+		xpc56_dr_rw(target, 32, dbcr0);
+
+		// keep dbcr1/2 at 0 for now
+		//printf("osr: %03x   dbcr0: %08x  dbsr: %08x\n", osr, dbcr0, dbsr);
+
+	} else {
+		LOG_WARNING("not implemented");
+		return ERROR_FAIL;
+	}
+
+	return ERROR_OK;
+}
+
+static int xpc56_breakpoint_remove(struct target *target, struct breakpoint *breakpoint)
+{
+	struct xpc56 *info = target->arch_info;
+
+	if (target->state != TARGET_HALTED) {
+		LOG_WARNING("target not halted");
+		return ERROR_TARGET_NOT_HALTED;
+	}
+
+	assert(breakpoint->set);
+
+	if (breakpoint->type == BKPT_HARD) {
+		assert(info->bkpt_hw_mask & BIT(breakpoint->set - 1));
+		info->bkpt_hw_mask &= BIT(breakpoint->set - 1) ;
+
+		xpc56_e200_ir_rw(target, E200_IR_RW | E200_IR_DBCR0);
+		uint32_t dbcr0 = xpc56_dr_rw(target, 32, 0);
+		dbcr0 &= ~BIT(23 - breakpoint->set + 1);
+		xpc56_e200_ir_rw(target, E200_IR_DBCR0);
+		xpc56_dr_rw(target, 32, dbcr0);
+
+	} else {
+		LOG_WARNING("not implemented");
+		return ERROR_FAIL;
+	}
+
+	return ERROR_OK;
+}
+
+
 
 COMMAND_HANDLER(handle_xpc56_dummy_command)  { MMM return ERROR_OK; }
 
@@ -957,30 +1053,26 @@ struct target_type xpc56_target = {
 	.name = "xpc56",
 
 	.poll = xpc56_poll,
-	.arch_state = xpc56_arch_state,
-
+	//.arch_state = xpc56_arch_state,
 	//.target_request_data = xpc56_target_request_data,
-
 	.halt = xpc56_halt,
 	.resume = xpc56_resume,
 	.step = xpc56_step,
 
 	.assert_reset = xpc56_assert_reset,
 	.deassert_reset = xpc56_deassert_reset,
-	.soft_reset_halt = xpc56_soft_reset_halt,
-
-	.get_gdb_reg_list = xpc56_get_gdb_reg_list,
+	//.soft_reset_halt = xpc56_soft_reset_halt,
+	//.get_gdb_reg_list = xpc56_get_gdb_reg_list,
 
 	.read_memory = xpc56_read_memory,
 	.write_memory = xpc56_write_memory,
 
-	.checksum_memory = xpc56_checksum_memory,
-	.blank_check_memory = xpc56_blank_check_memory,
+	//.checksum_memory = xpc56_checksum_memory,
+	//.blank_check_memory = xpc56_blank_check_memory,
+	//.run_algorithm = xpc56_run_algorithm,
 
-	.run_algorithm = xpc56_run_algorithm,
-
-	//.add_breakpoint = xpc56_add_breakpoint,
-	//.remove_breakpoint = xpc56_remove_breakpoint,
+	.add_breakpoint = xpc56_breakpoint_add,
+	.remove_breakpoint = xpc56_breakpoint_remove,
 	//.add_watchpoint = xpc56_add_watchpoint,
 	//.remove_watchpoint = xpc56_remove_watchpoint,
 
@@ -989,6 +1081,6 @@ struct target_type xpc56_target = {
 	.init_target = xpc56_init_target,
 	.deinit_target = xpc56_deinit_target,
 	.examine = xpc56_examine,
-	.check_reset = xpc56_check_reset,
+	//.check_reset = xpc56_check_reset,
 };
 
