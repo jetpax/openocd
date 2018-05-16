@@ -13,8 +13,10 @@ Boards used (e200z0 only):
 - FT2232H jtag
 
 Additional folders:
-- _spc560d-dis_test: basic LED application for SPC560D-DIS which can be compiled with gcc for e200 VLE
+- _spc560d-dis_test: basic LED application for SPC560D-DIS which can be compiled with gcc for e200 VLE.
 - _jtag_sniff: jtag decoder for FT2232H captures from Windows USBPcap or Linux usbmon.
+- _jtag_sniff/jtag2: another jtag decoder for vcd captures.
+- _jtag_sniff/replay: replay FT2232H sequences from _jtag_sniff output
 
 Flash with:
 src/openocd -f tcl/target/xpc56.cfg -c "reset halt ; flash erase_sector 0 0 last ; program _spc560d-dis_test/build/out.bin reset " 
