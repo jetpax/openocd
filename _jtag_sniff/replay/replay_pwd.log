@@ -1,0 +1,1422 @@
+START
+Device found: 16
+0 (skipping 13 nop)
+13 (processing > 82:c3:e3:80:0a:8b )
+- ACbus val:11000011  dir:11100011
+ mcu: RESET off
+- ADbus val:00001010  dir:10001011
+14 (processing > 82:c3:e3 )
+- ACbus val:11000011  dir:11100011
+ mcu: RESET off
+15 (processing > 86:04:00 )
+- set TCK/SK divisor reg:0x0004  clk:1200.0 kHz
+16 (processing > 82:c3:e3:80:0a:8b )
+- ACbus val:11000011  dir:11100011
+ mcu: RESET off
+- ADbus val:00001010  dir:10001011
+17 (processing > 82:e3:e3:80:0a:8b )
+- ACbus val:11100011  dir:11100011
+ mcu: RESET off
+- ADbus val:00001010  dir:10001011
+18 (processing > 86:02:00 )
+- set TCK/SK divisor reg:0x0002  clk:2000.0 kHz
+19 (processing > 4b:06:7f:87 )
+- 4b/100 1011 [7]
+   upd bug FTDI?
+tms [1, 1, 1, 1, 1, 1, 1]
+tdi [0, 0, 0, 0, 0, 0, 0]
+tdo [2, 2, 2, 2, 2, 2, 2] []
+TEST_LOGIC_RESET
+TEST_LOGIC_RESET
+TEST_LOGIC_RESET
+TEST_LOGIC_RESET
+TEST_LOGIC_RESET
+TEST_LOGIC_RESET
+TEST_LOGIC_RESET
+- execute queue []
+20 (skipping 9 nop)
+29 (processing > 4b:03:03:3f:07:ff:3f:00:ff:6b:02:83:87 )
+- 4b/100 1011 [4]
+tms [1, 1, 0, 0]
+tdi [0, 0, 0, 0]
+tdo [2, 2, 2, 2] []
+TEST_LOGIC_RESET
+TEST_LOGIC_RESET
+TEST_LOGIC_RESET
+RUN_TEST_IDLE
+- 3f/011 1111 [8]
+- 3f/011 1111 [1]
+- 6b/110 1011 [3]
+- execute queue [8, 1, 3]
+30 (processing < 32:68:ff:ff:ff )
+tms [0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0]
+tdi [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
+tdo [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1] []
+RUN_TEST_IDLE
+RUN_TEST_IDLE
+RUN_TEST_IDLE
+RUN_TEST_IDLE
+RUN_TEST_IDLE
+RUN_TEST_IDLE
+RUN_TEST_IDLE
+RUN_TEST_IDLE
+RUN_TEST_IDLE
+RUN_TEST_IDLE
+SELECT_DR_SCAN
+SELECT_IR_SCAN
+31 (processing > 4b:03:05 )
+- 4b/100 1011 [4]
+tms [1, 0, 1, 0]
+tdi [0, 0, 0, 0]
+tdo [2, 2, 2, 2] []
+CAPTURE_IR
+EXIT1_IR
+PAUSE_IR
+EXIT2_IR
+32 (skipping 1 nop)
+33 (processing > 4b:02:03 )
+- 4b/100 1011 [3]
+tms [1, 1, 0]
+tdi [0, 0, 0]
+tdo [2, 2, 2] []
+SHIFT_IR
+EXIT1_IR
+UPDATE_IR
+ mcu: update IR cnt:1  R:0  W:0
+mcu: ERROR IR prefix
+mcu: ERROR IR cnt 1 master
+ mcu: JTAGC IR select init
+1 (processing > 4b:03:03:3f:03:11:6b:02:83:87 )
+- 4b/100 1011 [4]
+tms [1, 1, 0, 0]
+tdi [0, 0, 0, 0]
+tdo [2, 2, 2, 2] []
+RUN_TEST_IDLE
+SELECT_DR_SCAN
+SELECT_IR_SCAN
+CAPTURE_IR
+- 3f/011 1111 [4]
+- 6b/110 1011 [3]
+- execute queue [4, 3]
+2 (processing < 32:68:1f:03 )
+tms [0, 0, 0, 0, 1, 1, 0]
+tdi [1, 0, 0, 0, 1, 1, 1]
+tdo [1, 0, 0, 0, 0, 0, 0] []
+SHIFT_IR
+EXIT1_IR
+UPDATE_IR
+ mcu: update IR cnt:5  R:1  W:11
+ mcu: JTAGC IR select TAP_ONCE
+5 (processing > 4b:03:03:3f:07:7e:3f:00:00:6b:02:03:87 )
+- 4b/100 1011 [4]
+tms [1, 1, 0, 0]
+tdi [0, 0, 0, 0]
+tdo [2, 2, 2, 2] []
+RUN_TEST_IDLE
+SELECT_DR_SCAN
+SELECT_IR_SCAN
+CAPTURE_IR
+- 3f/011 1111 [8]
+- 3f/011 1111 [1]
+- 6b/110 1011 [3]
+- execute queue [8, 1, 3]
+6 (processing < 32:68:01:00:e0 )
+tms [0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0]
+tdi [0, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0]
+tdo [1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1] []
+SHIFT_IR
+EXIT1_IR
+UPDATE_IR
+ mcu: update IR cnt:10  R:201  W:7e
+ mcu: OnCE sts:  MCLK 0 0 0 0 0 0 0
+ mcu: OnCE cmd:   0     0     0    |  1 1 1   1 1 1 0   EOnCE
+10 (processing > 86:02:00 )
+- set TCK/SK divisor reg:0x0002  clk:2000.0 kHz
+11 (processing > 4b:03:03:3f:07:ff:3f:00:ff:6b:02:83:87 )
+- 4b/100 1011 [4]
+tms [1, 1, 0, 0]
+tdi [0, 0, 0, 0]
+tdo [2, 2, 2, 2] []
+RUN_TEST_IDLE
+SELECT_DR_SCAN
+SELECT_IR_SCAN
+CAPTURE_IR
+- 3f/011 1111 [8]
+- 3f/011 1111 [1]
+- 6b/110 1011 [3]
+- execute queue [8, 1, 3]
+12 (processing < 32:68:01:00:e0 )
+tms [0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0]
+tdi [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
+tdo [1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1] []
+SHIFT_IR
+EXIT1_IR
+UPDATE_IR
+ mcu: update IR cnt:10  R:201  W:3ff
+ mcu: OnCE sts:  MCLK 0 0 0 0 0 0 0
+ mcu: OnCE cmd:    RW    GO    EX  |  1 1 1   1 1 1 1   Bypass
+10 (processing > 4b:03:05 )
+- 4b/100 1011 [4]
+tms [1, 0, 1, 0]
+tdi [0, 0, 0, 0]
+tdo [2, 2, 2, 2] []
+RUN_TEST_IDLE
+SELECT_DR_SCAN
+CAPTURE_DR
+EXIT1_DR
+11 (processing > 4b:02:03 )
+- 4b/100 1011 [3]
+tms [1, 1, 0]
+tdi [0, 0, 0]
+tdo [2, 2, 2] []
+PAUSE_DR
+ mcu: jtagc reset
+EXIT2_DR
+UPDATE_DR
+12 (skipping 1 nop)
+13 (processing > 4b:03:03:3f:03:01:6b:02:03:87 )
+- 4b/100 1011 [4]
+tms [1, 1, 0, 0]
+tdi [0, 0, 0, 0]
+tdo [2, 2, 2, 2] []
+RUN_TEST_IDLE
+SELECT_DR_SCAN
+SELECT_IR_SCAN
+CAPTURE_IR
+- 3f/011 1111 [4]
+- 6b/110 1011 [3]
+- execute queue [4, 3]
+14 (processing < 32:68:1e:03 )
+tms [0, 0, 0, 0, 1, 1, 0]
+tdi [1, 0, 0, 0, 0, 0, 0]
+tdo [1, 0, 0, 0, 0, 0, 0] []
+SHIFT_IR
+EXIT1_IR
+UPDATE_IR
+ mcu: update IR cnt:5  R:1  W:1
+ mcu: JTAGC IR select IDCODE
+5 (processing > 4b:03:05 )
+- 4b/100 1011 [4]
+tms [1, 0, 1, 0]
+tdi [0, 0, 0, 0]
+tdo [2, 2, 2, 2] []
+RUN_TEST_IDLE
+SELECT_DR_SCAN
+CAPTURE_DR
+EXIT1_DR
+6 (processing > 4b:02:03 )
+- 4b/100 1011 [3]
+tms [1, 1, 0]
+tdi [0, 0, 0]
+tdo [2, 2, 2] []
+PAUSE_DR
+ mcu: jtagc reset
+EXIT2_DR
+UPDATE_DR
+7 (processing > 4b:03:03:3f:03:ff:6b:02:83:87 )
+- 4b/100 1011 [4]
+tms [1, 1, 0, 0]
+tdi [0, 0, 0, 0]
+tdo [2, 2, 2, 2] []
+RUN_TEST_IDLE
+SELECT_DR_SCAN
+SELECT_IR_SCAN
+CAPTURE_IR
+- 3f/011 1111 [4]
+- 6b/110 1011 [3]
+- execute queue [4, 3]
+8 (processing < 32:68:10:02 )
+tms [0, 0, 0, 0, 1, 1, 0]
+tdi [1, 1, 1, 1, 1, 1, 1]
+tdo [1, 0, 0, 0, 0, 0, 0] []
+SHIFT_IR
+EXIT1_IR
+UPDATE_IR
+ mcu: update IR cnt:5  R:1  W:1f
+ mcu: JTAGC IR select BYPASS
+5 (processing > 4b:02:01:3f:07:00:3f:07:aa:3f:07:aa:3f:06:00:6b:02:03:87 )
+- 4b/100 1011 [3]
+tms [1, 0, 0]
+tdi [0, 0, 0]
+tdo [2, 2, 2] []
+RUN_TEST_IDLE
+SELECT_DR_SCAN
+CAPTURE_DR
+- 3f/011 1111 [8]
+- 3f/011 1111 [8]
+- 3f/011 1111 [8]
+- 3f/011 1111 [7]
+- 6b/110 1011 [3]
+- execute queue [8, 8, 8, 7, 3]
+6 (processing < 32:68:00:54:55:02:00 )
+tms [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0]
+tdi [0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+tdo [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0] []
+SHIFT_DR
+EXIT1_DR
+UPDATE_DR
+ mcu: update DR cnt:32  R:1555400  W:aaaa00  (BYPASS)
+ mcu: DR: BYPASS
+32 (processing > 4b:03:03:3f:03:07:6b:02:03:87 )
+- 4b/100 1011 [4]
+tms [1, 1, 0, 0]
+tdi [0, 0, 0, 0]
+tdo [2, 2, 2, 2] []
+RUN_TEST_IDLE
+SELECT_DR_SCAN
+SELECT_IR_SCAN
+CAPTURE_IR
+- 3f/011 1111 [4]
+- 6b/110 1011 [3]
+- execute queue [4, 3]
+33 (processing < 32:68:10:02 )
+tms [0, 0, 0, 0, 1, 1, 0]
+tdi [1, 1, 1, 0, 0, 0, 0]
+tdo [1, 0, 0, 0, 0, 0, 0] []
+SHIFT_IR
+EXIT1_IR
+UPDATE_IR
+ mcu: update IR cnt:5  R:1  W:7
+ mcu: JTAGC IR select PASSWORD
+5 (skipping 1 nop)
+6 (processing > 4b:02:01:19:07:00:ce:fa:ed:fe:ef:be:fe:ca:87 )
+- 4b/100 1011 [3]
+tms [1, 0, 0]
+tdi [0, 0, 0]
+tdo [2, 2, 2] []
+RUN_TEST_IDLE
+SELECT_DR_SCAN
+CAPTURE_DR
+- 19/001 1001 [64]
+tms [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+tdi [0, 1, 1, 1, 0, 0, 1, 1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 0, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 0, 1, 0, 1, 0, 0, 1, 1]
+tdo [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2] []
+SHIFT_DR
+- execute queue []
+64 (skipping 1 nop)
+65 (processing > 6b:02:83:87 )
+- 6b/110 1011 [3]
+- execute queue [3]
+66 (processing < 32:68:00 )
+tms [1, 1, 0]
+tdi [1, 1, 1]
+tdo [0, 0, 0] []
+SHIFT_DR
+EXIT1_DR
+UPDATE_DR
+ mcu: update DR cnt:65  R:0  W:1cafebeeffeedface  (PASSWORD)
+ mcu: DR: PASSWORD
+1 (processing > 4b:03:03:3f:03:01:6b:02:03:87 )
+- 4b/100 1011 [4]
+tms [1, 1, 0, 0]
+tdi [0, 0, 0, 0]
+tdo [2, 2, 2, 2] []
+RUN_TEST_IDLE
+SELECT_DR_SCAN
+SELECT_IR_SCAN
+CAPTURE_IR
+- 3f/011 1111 [4]
+- 6b/110 1011 [3]
+- execute queue [4, 3]
+2 (processing < 32:68:10:02 )
+tms [0, 0, 0, 0, 1, 1, 0]
+tdi [1, 0, 0, 0, 0, 0, 0]
+tdo [1, 0, 0, 0, 0, 0, 0] []
+SHIFT_IR
+EXIT1_IR
+UPDATE_IR
+ mcu: update IR cnt:5  R:1  W:1
+ mcu: JTAGC IR select IDCODE
+5 (processing > 4b:02:01:28:03:00:87 )
+- 4b/100 1011 [3]
+tms [1, 0, 0]
+tdi [0, 0, 0]
+tdo [2, 2, 2] []
+RUN_TEST_IDLE
+SELECT_DR_SCAN
+CAPTURE_DR
+- 28/010 1000 [32]
+- execute queue [32]
+6 (processing < 32:68:41:10:e4:3a )
+tms [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+tdi [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2]
+tdo [1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 1, 1, 1, 0, 1, 0, 1, 1, 1, 0, 0] []
+SHIFT_DR
+32 (processing > 19:02:00:41:10:e4:1b:06:3a:4b:02:03:87 )
+- 19/001 1001 [24]
+tms [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+tdi [1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 1, 1, 1]
+tdo [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2] []
+SHIFT_DR
+- 1b/001 1011 [7]
+tms [0, 0, 0, 0, 0, 0, 0]
+tdi [0, 1, 0, 1, 1, 1, 0]
+tdo [2, 2, 2, 2, 2, 2, 2] []
+SHIFT_DR
+- 4b/100 1011 [3]
+tms [1, 1, 0]
+tdi [0, 0, 0]
+tdo [2, 2, 2] []
+SHIFT_DR
+EXIT1_DR
+UPDATE_DR
+ mcu: update DR cnt:64  R:3ae41041  W:3ae4104100000000  (IDCODE)
+ERROR LEN DR 64
+ mcu: DR: IDCODE
+- execute queue []
+1 (skipping 1 nop)
+2 (processing > 4b:03:03:3f:03:ff:6b:02:83:87 )
+- 4b/100 1011 [4]
+tms [1, 1, 0, 0]
+tdi [0, 0, 0, 0]
+tdo [2, 2, 2, 2] []
+RUN_TEST_IDLE
+SELECT_DR_SCAN
+SELECT_IR_SCAN
+CAPTURE_IR
+- 3f/011 1111 [4]
+- 6b/110 1011 [3]
+- execute queue [4, 3]
+3 (processing < 32:68:13:02 )
+tms [0, 0, 0, 0, 1, 1, 0]
+tdi [1, 1, 1, 1, 1, 1, 1]
+tdo [1, 0, 0, 0, 0, 0, 0] []
+SHIFT_IR
+EXIT1_IR
+UPDATE_IR
+ mcu: update IR cnt:5  R:1  W:1f
+ mcu: JTAGC IR select BYPASS
+5 (processing > 4b:03:03:3f:03:ff:6b:02:83:87 )
+- 4b/100 1011 [4]
+tms [1, 1, 0, 0]
+tdi [0, 0, 0, 0]
+tdo [2, 2, 2, 2] []
+RUN_TEST_IDLE
+SELECT_DR_SCAN
+SELECT_IR_SCAN
+CAPTURE_IR
+- 3f/011 1111 [4]
+- 6b/110 1011 [3]
+- execute queue [4, 3]
+6 (processing < 32:68:10:02 )
+tms [0, 0, 0, 0, 1, 1, 0]
+tdi [1, 1, 1, 1, 1, 1, 1]
+tdo [1, 0, 0, 0, 0, 0, 0] []
+SHIFT_IR
+EXIT1_IR
+UPDATE_IR
+ mcu: update IR cnt:5  R:1  W:1f
+ mcu: JTAGC IR select BYPASS
+5 (skipping 1 nop)
+6 (processing > 4b:03:03:3f:07:ff:3f:00:ff:6b:02:83:87 )
+- 4b/100 1011 [4]
+tms [1, 1, 0, 0]
+tdi [0, 0, 0, 0]
+tdo [2, 2, 2, 2] []
+RUN_TEST_IDLE
+SELECT_DR_SCAN
+SELECT_IR_SCAN
+CAPTURE_IR
+- 3f/011 1111 [8]
+- 3f/011 1111 [1]
+- 6b/110 1011 [3]
+- execute queue [8, 1, 3]
+7 (processing < 32:68:e1:f0:fe )
+tms [0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0]
+tdi [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
+tdo [1, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1] []
+SHIFT_IR
+EXIT1_IR
+UPDATE_IR
+ mcu: update IR cnt:10  R:3e1  W:3ff
+mcu: ERROR IR cnt 10 master
+ mcu: JTAGC IR select BYPASS
+10 (processing > 4b:03:05 )
+- 4b/100 1011 [4]
+tms [1, 0, 1, 0]
+tdi [0, 0, 0, 0]
+tdo [2, 2, 2, 2] []
+RUN_TEST_IDLE
+SELECT_DR_SCAN
+CAPTURE_DR
+EXIT1_DR
+11 (processing > 4b:02:03 )
+- 4b/100 1011 [3]
+tms [1, 1, 0]
+tdi [0, 0, 0]
+tdo [2, 2, 2] []
+PAUSE_DR
+ mcu: jtagc reset
+EXIT2_DR
+UPDATE_DR
+12 (processing > 4b:03:03:3f:03:01:6b:02:03:87 )
+- 4b/100 1011 [4]
+tms [1, 1, 0, 0]
+tdi [0, 0, 0, 0]
+tdo [2, 2, 2, 2] []
+RUN_TEST_IDLE
+SELECT_DR_SCAN
+SELECT_IR_SCAN
+CAPTURE_IR
+- 3f/011 1111 [4]
+- 6b/110 1011 [3]
+- execute queue [4, 3]
+13 (processing < 32:68:1f:03 )
+tms [0, 0, 0, 0, 1, 1, 0]
+tdi [1, 0, 0, 0, 0, 0, 0]
+tdo [1, 0, 0, 0, 0, 0, 0] []
+SHIFT_IR
+EXIT1_IR
+UPDATE_IR
+ mcu: update IR cnt:5  R:1  W:1
+ mcu: JTAGC IR select IDCODE
+5 (processing > 4b:03:03:3f:03:01:6b:02:03:87 )
+- 4b/100 1011 [4]
+tms [1, 1, 0, 0]
+tdi [0, 0, 0, 0]
+tdo [2, 2, 2, 2] []
+RUN_TEST_IDLE
+SELECT_DR_SCAN
+SELECT_IR_SCAN
+CAPTURE_IR
+- 3f/011 1111 [4]
+- 6b/110 1011 [3]
+- execute queue [4, 3]
+6 (processing < 32:68:10:02 )
+tms [0, 0, 0, 0, 1, 1, 0]
+tdi [1, 0, 0, 0, 0, 0, 0]
+tdo [1, 0, 0, 0, 0, 0, 0] []
+SHIFT_IR
+EXIT1_IR
+UPDATE_IR
+ mcu: update IR cnt:5  R:1  W:1
+ mcu: JTAGC IR select IDCODE
+5 (processing > 4b:02:01:3f:07:00:3f:07:00:3f:07:00:3f:06:00:6b:02:03:87 )
+- 4b/100 1011 [3]
+tms [1, 0, 0]
+tdi [0, 0, 0]
+tdo [2, 2, 2] []
+RUN_TEST_IDLE
+SELECT_DR_SCAN
+CAPTURE_DR
+- 3f/011 1111 [8]
+- 3f/011 1111 [8]
+- 3f/011 1111 [8]
+- 3f/011 1111 [7]
+- 6b/110 1011 [3]
+- execute queue [8, 8, 8, 7, 3]
+6 (processing < 32:68:41:10:e4:75:0e )
+tms [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0]
+tdi [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+tdo [1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 1, 1, 1, 0, 1, 0, 1, 1, 1, 0, 0, 0, 0] []
+SHIFT_DR
+EXIT1_DR
+UPDATE_DR
+ mcu: update DR cnt:32  R:3ae41041  W:0  (IDCODE)
+ mcu: DR: IDCODE
+32 (processing > 82:e1:e3:80:0a:8b )
+- ACbus val:11100001  dir:11100011
+ mcu: RESET ON
+- ADbus val:00001010  dir:10001011
+33 (processing > 82:e1:e3:80:0a:8b )
+- ACbus val:11100001  dir:11100011
+ mcu: RESET ON
+- ADbus val:00001010  dir:10001011
+34 (skipping 27 nop)
+61 (processing > 4b:06:7f:87 )
+- 4b/100 1011 [7]
+   upd bug FTDI?
+tms [1, 1, 1, 1, 1, 1, 1]
+tdi [0, 0, 0, 0, 0, 0, 0]
+tdo [2, 2, 2, 2, 2, 2, 2] []
+RUN_TEST_IDLE
+SELECT_DR_SCAN
+SELECT_IR_SCAN
+TEST_LOGIC_RESET
+TEST_LOGIC_RESET
+TEST_LOGIC_RESET
+TEST_LOGIC_RESET
+- execute queue []
+62 (skipping 17 nop)
+79 (processing > 4b:03:03:3f:03:01:6b:02:03:87 )
+- 4b/100 1011 [4]
+tms [1, 1, 0, 0]
+tdi [0, 0, 0, 0]
+tdo [2, 2, 2, 2] []
+TEST_LOGIC_RESET
+TEST_LOGIC_RESET
+TEST_LOGIC_RESET
+RUN_TEST_IDLE
+- 3f/011 1111 [4]
+- 6b/110 1011 [3]
+- execute queue [4, 3]
+80 (processing < 32:68:f0:fe )
+tms [0, 0, 0, 0, 1, 1, 0]
+tdi [1, 0, 0, 0, 0, 0, 0]
+tdo [1, 1, 1, 1, 1, 1, 1] []
+RUN_TEST_IDLE
+RUN_TEST_IDLE
+RUN_TEST_IDLE
+RUN_TEST_IDLE
+RUN_TEST_IDLE
+SELECT_DR_SCAN
+SELECT_IR_SCAN
+81 (processing > 4b:02:01:3f:07:00:3f:07:00:3f:07:00:3f:06:00:6b:02:03:87 )
+- 4b/100 1011 [3]
+tms [1, 0, 0]
+tdi [0, 0, 0]
+tdo [2, 2, 2] []
+CAPTURE_IR
+EXIT1_IR
+PAUSE_IR
+- 3f/011 1111 [8]
+- 3f/011 1111 [8]
+- 3f/011 1111 [8]
+- 3f/011 1111 [7]
+- 6b/110 1011 [3]
+- execute queue [8, 8, 8, 7, 3]
+82 (processing < 32:68:ff:ff:ff:ff:ff )
+tms [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0]
+tdi [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+tdo [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1] []
+PAUSE_IR
+PAUSE_IR
+PAUSE_IR
+PAUSE_IR
+PAUSE_IR
+PAUSE_IR
+PAUSE_IR
+PAUSE_IR
+PAUSE_IR
+PAUSE_IR
+PAUSE_IR
+PAUSE_IR
+PAUSE_IR
+PAUSE_IR
+PAUSE_IR
+PAUSE_IR
+PAUSE_IR
+PAUSE_IR
+PAUSE_IR
+PAUSE_IR
+PAUSE_IR
+PAUSE_IR
+PAUSE_IR
+PAUSE_IR
+PAUSE_IR
+PAUSE_IR
+PAUSE_IR
+PAUSE_IR
+PAUSE_IR
+PAUSE_IR
+PAUSE_IR
+PAUSE_IR
+EXIT2_IR
+UPDATE_IR
+83 (processing > 4b:03:03:3f:03:01:6b:02:03:87 )
+- 4b/100 1011 [4]
+tms [1, 1, 0, 0]
+tdi [0, 0, 0, 0]
+tdo [2, 2, 2, 2] []
+RUN_TEST_IDLE
+SELECT_DR_SCAN
+SELECT_IR_SCAN
+CAPTURE_IR
+- 3f/011 1111 [4]
+- 6b/110 1011 [3]
+- execute queue [4, 3]
+84 (processing < 32:68:1f:03 )
+tms [0, 0, 0, 0, 1, 1, 0]
+tdi [1, 0, 0, 0, 0, 0, 0]
+tdo [1, 0, 0, 0, 0, 0, 0] []
+SHIFT_IR
+EXIT1_IR
+UPDATE_IR
+ mcu: update IR cnt:5  R:1  W:1
+ mcu: JTAGC IR select IDCODE
+5 (skipping 1 nop)
+6 (processing > 4b:02:01:3f:07:00:3f:07:00:3f:07:00:3f:06:00:6b:02:03:87 )
+- 4b/100 1011 [3]
+tms [1, 0, 0]
+tdi [0, 0, 0]
+tdo [2, 2, 2] []
+RUN_TEST_IDLE
+SELECT_DR_SCAN
+CAPTURE_DR
+- 3f/011 1111 [8]
+- 3f/011 1111 [8]
+- 3f/011 1111 [8]
+- 3f/011 1111 [7]
+- 6b/110 1011 [3]
+- execute queue [8, 8, 8, 7, 3]
+7 (processing < 32:68:41:10:e4:75:0e )
+tms [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0]
+tdi [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+tdo [1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 1, 1, 1, 0, 1, 0, 1, 1, 1, 0, 0, 0, 0] []
+SHIFT_DR
+EXIT1_DR
+UPDATE_DR
+ mcu: update DR cnt:32  R:3ae41041  W:0  (IDCODE)
+ mcu: DR: IDCODE
+32 (processing > 4b:03:03:3f:03:07:6b:02:03:87 )
+- 4b/100 1011 [4]
+tms [1, 1, 0, 0]
+tdi [0, 0, 0, 0]
+tdo [2, 2, 2, 2] []
+RUN_TEST_IDLE
+SELECT_DR_SCAN
+SELECT_IR_SCAN
+CAPTURE_IR
+- 3f/011 1111 [4]
+- 6b/110 1011 [3]
+- execute queue [4, 3]
+33 (processing < 32:68:10:02 )
+tms [0, 0, 0, 0, 1, 1, 0]
+tdi [1, 1, 1, 0, 0, 0, 0]
+tdo [1, 0, 0, 0, 0, 0, 0] []
+SHIFT_IR
+EXIT1_IR
+UPDATE_IR
+ mcu: update IR cnt:5  R:1  W:7
+ mcu: JTAGC IR select PASSWORD
+5 (processing > 4b:02:01:19:07:00:ce:fa:ed:fe:ef:be:fe:ca:87 )
+- 4b/100 1011 [3]
+tms [1, 0, 0]
+tdi [0, 0, 0]
+tdo [2, 2, 2] []
+RUN_TEST_IDLE
+SELECT_DR_SCAN
+CAPTURE_DR
+- 19/001 1001 [64]
+tms [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+tdi [0, 1, 1, 1, 0, 0, 1, 1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 0, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 0, 1, 0, 1, 0, 0, 1, 1]
+tdo [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2] []
+SHIFT_DR
+- execute queue []
+64 (processing > 6b:02:83:87 )
+- 6b/110 1011 [3]
+- execute queue [3]
+65 (skipping 1 nop)
+66 (processing < 32:68:00 )
+tms [1, 1, 0]
+tdi [1, 1, 1]
+tdo [0, 0, 0] []
+SHIFT_DR
+EXIT1_DR
+UPDATE_DR
+ mcu: update DR cnt:65  R:0  W:1cafebeeffeedface  (PASSWORD)
+ mcu: DR: PASSWORD
+1 (processing > 4b:03:03:3f:03:ff:6b:02:83:87 )
+- 4b/100 1011 [4]
+tms [1, 1, 0, 0]
+tdi [0, 0, 0, 0]
+tdo [2, 2, 2, 2] []
+RUN_TEST_IDLE
+SELECT_DR_SCAN
+SELECT_IR_SCAN
+CAPTURE_IR
+- 3f/011 1111 [4]
+- 6b/110 1011 [3]
+- execute queue [4, 3]
+2 (processing < 32:68:10:02 )
+tms [0, 0, 0, 0, 1, 1, 0]
+tdi [1, 1, 1, 1, 1, 1, 1]
+tdo [1, 0, 0, 0, 0, 0, 0] []
+SHIFT_IR
+EXIT1_IR
+UPDATE_IR
+ mcu: update IR cnt:5  R:1  W:1f
+ mcu: JTAGC IR select BYPASS
+5 (processing > 4b:03:05 )
+- 4b/100 1011 [4]
+tms [1, 0, 1, 0]
+tdi [0, 0, 0, 0]
+tdo [2, 2, 2, 2] []
+RUN_TEST_IDLE
+SELECT_DR_SCAN
+CAPTURE_DR
+EXIT1_DR
+6 (processing > 4b:02:03 )
+- 4b/100 1011 [3]
+tms [1, 1, 0]
+tdi [0, 0, 0]
+tdo [2, 2, 2] []
+PAUSE_DR
+ mcu: jtagc reset
+EXIT2_DR
+UPDATE_DR
+7 (processing > 4b:03:03:3f:03:11:6b:02:83:87 )
+- 4b/100 1011 [4]
+tms [1, 1, 0, 0]
+tdi [0, 0, 0, 0]
+tdo [2, 2, 2, 2] []
+RUN_TEST_IDLE
+SELECT_DR_SCAN
+SELECT_IR_SCAN
+CAPTURE_IR
+- 3f/011 1111 [4]
+- 6b/110 1011 [3]
+- execute queue [4, 3]
+8 (skipping 1 nop)
+9 (processing < 32:68:10:02 )
+tms [0, 0, 0, 0, 1, 1, 0]
+tdi [1, 0, 0, 0, 1, 1, 1]
+tdo [1, 0, 0, 0, 0, 0, 0] []
+SHIFT_IR
+EXIT1_IR
+UPDATE_IR
+ mcu: update IR cnt:5  R:1  W:11
+ mcu: JTAGC IR select TAP_ONCE
+5 (processing > 4b:03:03:3f:07:7e:3f:00:00:6b:02:03:87 )
+- 4b/100 1011 [4]
+tms [1, 1, 0, 0]
+tdi [0, 0, 0, 0]
+tdo [2, 2, 2, 2] []
+RUN_TEST_IDLE
+SELECT_DR_SCAN
+SELECT_IR_SCAN
+CAPTURE_IR
+- 3f/011 1111 [8]
+- 3f/011 1111 [1]
+- 6b/110 1011 [3]
+- execute queue [8, 1, 3]
+6 (processing < 32:68:41:20:e4 )
+tms [0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0]
+tdi [0, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0]
+tdo [1, 0, 0, 0, 0, 0, 1, 0, 0, 1, 1, 1] []
+SHIFT_IR
+EXIT1_IR
+UPDATE_IR
+ mcu: update IR cnt:10  R:241  W:7e
+ mcu: OnCE sts:  MCLK 0 0 RESET 0 0 0 0
+ mcu: OnCE cmd:   0     0     0    |  1 1 1   1 1 1 0   EOnCE
+10 (processing > 4b:03:03:3f:07:ff:3f:00:ff:6b:02:83:87 )
+- 4b/100 1011 [4]
+tms [1, 1, 0, 0]
+tdi [0, 0, 0, 0]
+tdo [2, 2, 2, 2] []
+RUN_TEST_IDLE
+SELECT_DR_SCAN
+SELECT_IR_SCAN
+CAPTURE_IR
+- 3f/011 1111 [8]
+- 3f/011 1111 [1]
+- 6b/110 1011 [3]
+- execute queue [8, 1, 3]
+11 (processing < 32:68:41:20:e4 )
+tms [0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0]
+tdi [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
+tdo [1, 0, 0, 0, 0, 0, 1, 0, 0, 1, 1, 1] []
+SHIFT_IR
+EXIT1_IR
+UPDATE_IR
+ mcu: update IR cnt:10  R:241  W:3ff
+ mcu: OnCE sts:  MCLK 0 0 RESET 0 0 0 0
+ mcu: OnCE cmd:    RW    GO    EX  |  1 1 1   1 1 1 1   Bypass
+10 (processing > 4b:03:05 )
+- 4b/100 1011 [4]
+tms [1, 0, 1, 0]
+tdi [0, 0, 0, 0]
+tdo [2, 2, 2, 2] []
+RUN_TEST_IDLE
+SELECT_DR_SCAN
+CAPTURE_DR
+EXIT1_DR
+11 (processing > 4b:02:03 )
+- 4b/100 1011 [3]
+tms [1, 1, 0]
+tdi [0, 0, 0]
+tdo [2, 2, 2] []
+PAUSE_DR
+ mcu: jtagc reset
+EXIT2_DR
+UPDATE_DR
+12 (processing > 4b:03:03:3f:03:01:6b:02:03:87 )
+- 4b/100 1011 [4]
+tms [1, 1, 0, 0]
+tdi [0, 0, 0, 0]
+tdo [2, 2, 2, 2] []
+RUN_TEST_IDLE
+SELECT_DR_SCAN
+SELECT_IR_SCAN
+CAPTURE_IR
+- 3f/011 1111 [4]
+- 6b/110 1011 [3]
+- execute queue [4, 3]
+13 (processing < 32:68:1e:03 )
+tms [0, 0, 0, 0, 1, 1, 0]
+tdi [1, 0, 0, 0, 0, 0, 0]
+tdo [1, 0, 0, 0, 0, 0, 0] []
+SHIFT_IR
+EXIT1_IR
+UPDATE_IR
+ mcu: update IR cnt:5  R:1  W:1
+ mcu: JTAGC IR select IDCODE
+5 (processing > 4b:03:03:3f:03:01:6b:02:03:87 )
+- 4b/100 1011 [4]
+tms [1, 1, 0, 0]
+tdi [0, 0, 0, 0]
+tdo [2, 2, 2, 2] []
+RUN_TEST_IDLE
+SELECT_DR_SCAN
+SELECT_IR_SCAN
+CAPTURE_IR
+- 3f/011 1111 [4]
+- 6b/110 1011 [3]
+- execute queue [4, 3]
+6 (processing < 32:68:10:02 )
+tms [0, 0, 0, 0, 1, 1, 0]
+tdi [1, 0, 0, 0, 0, 0, 0]
+tdo [1, 0, 0, 0, 0, 0, 0] []
+SHIFT_IR
+EXIT1_IR
+UPDATE_IR
+ mcu: update IR cnt:5  R:1  W:1
+ mcu: JTAGC IR select IDCODE
+5 (processing > 4b:02:01:3f:07:00:3f:07:00:3f:07:00:3f:06:00:6b:02:03:87 )
+- 4b/100 1011 [3]
+tms [1, 0, 0]
+tdi [0, 0, 0]
+tdo [2, 2, 2] []
+RUN_TEST_IDLE
+SELECT_DR_SCAN
+CAPTURE_DR
+- 3f/011 1111 [8]
+- 3f/011 1111 [8]
+- 3f/011 1111 [8]
+- 3f/011 1111 [7]
+- 6b/110 1011 [3]
+- execute queue [8, 8, 8, 7, 3]
+6 (skipping 1 nop)
+7 (processing < 32:68:41:10:e4:75:0e )
+tms [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0]
+tdi [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+tdo [1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 1, 1, 1, 0, 1, 0, 1, 1, 1, 0, 0, 0, 0] []
+SHIFT_DR
+EXIT1_DR
+UPDATE_DR
+ mcu: update DR cnt:32  R:3ae41041  W:0  (IDCODE)
+ mcu: DR: IDCODE
+32 (processing > 4b:03:03:3f:03:07:6b:02:03:87 )
+- 4b/100 1011 [4]
+tms [1, 1, 0, 0]
+tdi [0, 0, 0, 0]
+tdo [2, 2, 2, 2] []
+RUN_TEST_IDLE
+SELECT_DR_SCAN
+SELECT_IR_SCAN
+CAPTURE_IR
+- 3f/011 1111 [4]
+- 6b/110 1011 [3]
+- execute queue [4, 3]
+33 (processing < 32:68:10:02 )
+tms [0, 0, 0, 0, 1, 1, 0]
+tdi [1, 1, 1, 0, 0, 0, 0]
+tdo [1, 0, 0, 0, 0, 0, 0] []
+SHIFT_IR
+EXIT1_IR
+UPDATE_IR
+ mcu: update IR cnt:5  R:1  W:7
+ mcu: JTAGC IR select PASSWORD
+5 (processing > 4b:02:01:19:07:00:ce:fa:ed:fe:ef:be:fe:ca:87 )
+- 4b/100 1011 [3]
+tms [1, 0, 0]
+tdi [0, 0, 0]
+tdo [2, 2, 2] []
+RUN_TEST_IDLE
+SELECT_DR_SCAN
+CAPTURE_DR
+- 19/001 1001 [64]
+tms [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+tdi [0, 1, 1, 1, 0, 0, 1, 1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 0, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 0, 1, 0, 1, 0, 0, 1, 1]
+tdo [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2] []
+SHIFT_DR
+- execute queue []
+64 (skipping 1 nop)
+65 (processing > 6b:02:83:87 )
+- 6b/110 1011 [3]
+- execute queue [3]
+66 (processing < 32:68:00 )
+tms [1, 1, 0]
+tdi [1, 1, 1]
+tdo [0, 0, 0] []
+SHIFT_DR
+EXIT1_DR
+UPDATE_DR
+ mcu: update DR cnt:65  R:0  W:1cafebeeffeedface  (PASSWORD)
+ mcu: DR: PASSWORD
+1 (processing > 4b:03:03:3f:03:ff:6b:02:83:87 )
+- 4b/100 1011 [4]
+tms [1, 1, 0, 0]
+tdi [0, 0, 0, 0]
+tdo [2, 2, 2, 2] []
+RUN_TEST_IDLE
+SELECT_DR_SCAN
+SELECT_IR_SCAN
+CAPTURE_IR
+- 3f/011 1111 [4]
+- 6b/110 1011 [3]
+- execute queue [4, 3]
+2 (processing < 32:68:10:02 )
+tms [0, 0, 0, 0, 1, 1, 0]
+tdi [1, 1, 1, 1, 1, 1, 1]
+tdo [1, 0, 0, 0, 0, 0, 0] []
+SHIFT_IR
+EXIT1_IR
+UPDATE_IR
+ mcu: update IR cnt:5  R:1  W:1f
+ mcu: JTAGC IR select BYPASS
+5 (processing > 4b:03:05 )
+- 4b/100 1011 [4]
+tms [1, 0, 1, 0]
+tdi [0, 0, 0, 0]
+tdo [2, 2, 2, 2] []
+RUN_TEST_IDLE
+SELECT_DR_SCAN
+CAPTURE_DR
+EXIT1_DR
+6 (processing > 4b:02:03 )
+- 4b/100 1011 [3]
+tms [1, 1, 0]
+tdi [0, 0, 0]
+tdo [2, 2, 2] []
+PAUSE_DR
+ mcu: jtagc reset
+EXIT2_DR
+UPDATE_DR
+7 (processing > 4b:03:03:3f:03:11:6b:02:83:87 )
+- 4b/100 1011 [4]
+tms [1, 1, 0, 0]
+tdi [0, 0, 0, 0]
+tdo [2, 2, 2, 2] []
+RUN_TEST_IDLE
+SELECT_DR_SCAN
+SELECT_IR_SCAN
+CAPTURE_IR
+- 3f/011 1111 [4]
+- 6b/110 1011 [3]
+- execute queue [4, 3]
+8 (processing < 32:68:10:02 )
+tms [0, 0, 0, 0, 1, 1, 0]
+tdi [1, 0, 0, 0, 1, 1, 1]
+tdo [1, 0, 0, 0, 0, 0, 0] []
+SHIFT_IR
+EXIT1_IR
+UPDATE_IR
+ mcu: update IR cnt:5  R:1  W:11
+ mcu: JTAGC IR select TAP_ONCE
+5 (skipping 1 nop)
+6 (processing > 4b:03:03:3f:07:7e:3f:00:00:6b:02:03:87 )
+- 4b/100 1011 [4]
+tms [1, 1, 0, 0]
+tdi [0, 0, 0, 0]
+tdo [2, 2, 2, 2] []
+RUN_TEST_IDLE
+SELECT_DR_SCAN
+SELECT_IR_SCAN
+CAPTURE_IR
+- 3f/011 1111 [8]
+- 3f/011 1111 [1]
+- 6b/110 1011 [3]
+- execute queue [8, 1, 3]
+7 (processing < 32:68:41:20:e4 )
+tms [0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0]
+tdi [0, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0]
+tdo [1, 0, 0, 0, 0, 0, 1, 0, 0, 1, 1, 1] []
+SHIFT_IR
+EXIT1_IR
+UPDATE_IR
+ mcu: update IR cnt:10  R:241  W:7e
+ mcu: OnCE sts:  MCLK 0 0 RESET 0 0 0 0
+ mcu: OnCE cmd:   0     0     0    |  1 1 1   1 1 1 0   EOnCE
+10 (processing > 4b:03:03:3f:07:ff:3f:00:ff:6b:02:83:87 )
+- 4b/100 1011 [4]
+tms [1, 1, 0, 0]
+tdi [0, 0, 0, 0]
+tdo [2, 2, 2, 2] []
+RUN_TEST_IDLE
+SELECT_DR_SCAN
+SELECT_IR_SCAN
+CAPTURE_IR
+- 3f/011 1111 [8]
+- 3f/011 1111 [1]
+- 6b/110 1011 [3]
+- execute queue [8, 1, 3]
+11 (processing < 32:68:41:20:e4 )
+tms [0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0]
+tdi [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
+tdo [1, 0, 0, 0, 0, 0, 1, 0, 0, 1, 1, 1] []
+SHIFT_IR
+EXIT1_IR
+UPDATE_IR
+ mcu: update IR cnt:10  R:241  W:3ff
+ mcu: OnCE sts:  MCLK 0 0 RESET 0 0 0 0
+ mcu: OnCE cmd:    RW    GO    EX  |  1 1 1   1 1 1 1   Bypass
+10 (processing > 4b:03:05 )
+- 4b/100 1011 [4]
+tms [1, 0, 1, 0]
+tdi [0, 0, 0, 0]
+tdo [2, 2, 2, 2] []
+RUN_TEST_IDLE
+SELECT_DR_SCAN
+CAPTURE_DR
+EXIT1_DR
+11 (processing > 4b:02:03 )
+- 4b/100 1011 [3]
+tms [1, 1, 0]
+tdi [0, 0, 0]
+tdo [2, 2, 2] []
+PAUSE_DR
+ mcu: jtagc reset
+EXIT2_DR
+UPDATE_DR
+12 (processing > 4b:03:03:3f:03:01:6b:02:03:87 )
+- 4b/100 1011 [4]
+tms [1, 1, 0, 0]
+tdi [0, 0, 0, 0]
+tdo [2, 2, 2, 2] []
+RUN_TEST_IDLE
+SELECT_DR_SCAN
+SELECT_IR_SCAN
+CAPTURE_IR
+- 3f/011 1111 [4]
+- 6b/110 1011 [3]
+- execute queue [4, 3]
+13 (processing < 32:68:1e:03 )
+tms [0, 0, 0, 0, 1, 1, 0]
+tdi [1, 0, 0, 0, 0, 0, 0]
+tdo [1, 0, 0, 0, 0, 0, 0] []
+SHIFT_IR
+EXIT1_IR
+UPDATE_IR
+ mcu: update IR cnt:5  R:1  W:1
+ mcu: JTAGC IR select IDCODE
+5 (processing > 4b:03:03:3f:03:07:6b:02:03:87 )
+- 4b/100 1011 [4]
+tms [1, 1, 0, 0]
+tdi [0, 0, 0, 0]
+tdo [2, 2, 2, 2] []
+RUN_TEST_IDLE
+SELECT_DR_SCAN
+SELECT_IR_SCAN
+CAPTURE_IR
+- 3f/011 1111 [4]
+- 6b/110 1011 [3]
+- execute queue [4, 3]
+6 (processing < 32:68:10:02 )
+tms [0, 0, 0, 0, 1, 1, 0]
+tdi [1, 1, 1, 0, 0, 0, 0]
+tdo [1, 0, 0, 0, 0, 0, 0] []
+SHIFT_IR
+EXIT1_IR
+UPDATE_IR
+ mcu: update IR cnt:5  R:1  W:7
+ mcu: JTAGC IR select PASSWORD
+5 (processing > 4b:02:01:19:07:00:ce:fa:ed:fe:ef:be:fe:ca:87 )
+- 4b/100 1011 [3]
+tms [1, 0, 0]
+tdi [0, 0, 0]
+tdo [2, 2, 2] []
+RUN_TEST_IDLE
+SELECT_DR_SCAN
+CAPTURE_DR
+- 19/001 1001 [64]
+tms [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+tdi [0, 1, 1, 1, 0, 0, 1, 1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 0, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 0, 1, 0, 1, 0, 0, 1, 1]
+tdo [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2] []
+SHIFT_DR
+- execute queue []
+64 (processing < 32:08 )
+65 (skipping 1 nop)
+66 (processing > 6b:02:83:87 )
+- 6b/110 1011 [3]
+- execute queue [3]
+67 (processing < 32:68:e0 )
+tms [1, 1, 0]
+tdi [1, 1, 1]
+tdo [1, 1, 1] []
+SHIFT_DR
+EXIT1_DR
+UPDATE_DR
+ mcu: update DR cnt:65  R:10000000000000000  W:1cafebeeffeedface  (PASSWORD)
+ mcu: DR: PASSWORD
+1 (skipping 1 nop)
+2 (processing > 4b:03:03:3f:03:ff:6b:02:83:87 )
+- 4b/100 1011 [4]
+tms [1, 1, 0, 0]
+tdi [0, 0, 0, 0]
+tdo [2, 2, 2, 2] []
+RUN_TEST_IDLE
+SELECT_DR_SCAN
+SELECT_IR_SCAN
+CAPTURE_IR
+- 3f/011 1111 [4]
+- 6b/110 1011 [3]
+- execute queue [4, 3]
+3 (processing < 32:68:1e:03 )
+tms [0, 0, 0, 0, 1, 1, 0]
+tdi [1, 1, 1, 1, 1, 1, 1]
+tdo [1, 0, 0, 0, 0, 0, 0] []
+SHIFT_IR
+EXIT1_IR
+UPDATE_IR
+ mcu: update IR cnt:5  R:1  W:1f
+ mcu: JTAGC IR select BYPASS
+5 (processing > 4b:03:05 )
+- 4b/100 1011 [4]
+tms [1, 0, 1, 0]
+tdi [0, 0, 0, 0]
+tdo [2, 2, 2, 2] []
+RUN_TEST_IDLE
+SELECT_DR_SCAN
+CAPTURE_DR
+EXIT1_DR
+6 (processing > 4b:02:03 )
+- 4b/100 1011 [3]
+tms [1, 1, 0]
+tdi [0, 0, 0]
+tdo [2, 2, 2] []
+PAUSE_DR
+ mcu: jtagc reset
+EXIT2_DR
+UPDATE_DR
+7 (processing > 4b:03:03:3f:03:11:6b:02:83:87 )
+- 4b/100 1011 [4]
+tms [1, 1, 0, 0]
+tdi [0, 0, 0, 0]
+tdo [2, 2, 2, 2] []
+RUN_TEST_IDLE
+SELECT_DR_SCAN
+SELECT_IR_SCAN
+CAPTURE_IR
+- 3f/011 1111 [4]
+- 6b/110 1011 [3]
+- execute queue [4, 3]
+8 (processing < 32:68:10:02 )
+tms [0, 0, 0, 0, 1, 1, 0]
+tdi [1, 0, 0, 0, 1, 1, 1]
+tdo [1, 0, 0, 0, 0, 0, 0] []
+SHIFT_IR
+EXIT1_IR
+UPDATE_IR
+ mcu: update IR cnt:5  R:1  W:11
+ mcu: JTAGC IR select TAP_ONCE
+5 (processing > 4b:03:03:3f:07:7e:3f:00:00:6b:02:03:87 )
+- 4b/100 1011 [4]
+tms [1, 1, 0, 0]
+tdi [0, 0, 0, 0]
+tdo [2, 2, 2, 2] []
+RUN_TEST_IDLE
+SELECT_DR_SCAN
+SELECT_IR_SCAN
+CAPTURE_IR
+- 3f/011 1111 [8]
+- 3f/011 1111 [1]
+- 6b/110 1011 [3]
+- execute queue [8, 1, 3]
+6 (processing < 32:68:41:20:e4 )
+tms [0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0]
+tdi [0, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0]
+tdo [1, 0, 0, 0, 0, 0, 1, 0, 0, 1, 1, 1] []
+SHIFT_IR
+EXIT1_IR
+UPDATE_IR
+ mcu: update IR cnt:10  R:241  W:7e
+ mcu: OnCE sts:  MCLK 0 0 RESET 0 0 0 0
+ mcu: OnCE cmd:   0     0     0    |  1 1 1   1 1 1 0   EOnCE
+10 (processing > 4b:03:03:3f:07:12:3f:00:02:6b:02:83:87 )
+- 4b/100 1011 [4]
+tms [1, 1, 0, 0]
+tdi [0, 0, 0, 0]
+tdo [2, 2, 2, 2] []
+RUN_TEST_IDLE
+SELECT_DR_SCAN
+SELECT_IR_SCAN
+CAPTURE_IR
+- 3f/011 1111 [8]
+- 3f/011 1111 [1]
+- 6b/110 1011 [3]
+- execute queue [8, 1, 3]
+11 (processing < 32:68:41:20:e4 )
+tms [0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0]
+tdi [0, 1, 0, 0, 1, 0, 0, 0, 0, 1, 1, 1]
+tdo [1, 0, 0, 0, 0, 0, 1, 0, 0, 1, 1, 1] []
+SHIFT_IR
+EXIT1_IR
+UPDATE_IR
+ mcu: update IR cnt:10  R:241  W:212
+ mcu: OnCE sts:  MCLK 0 0 RESET 0 0 0 0
+ mcu: OnCE cmd:    RW   0     0    |  0 0 1   0 0 1 0   OCR
+10 (processing > 4b:02:01:3f:07:00:3f:07:00:3f:07:00:3f:06:00:6b:02:03:87 )
+- 4b/100 1011 [3]
+tms [1, 0, 0]
+tdi [0, 0, 0]
+tdo [2, 2, 2] []
+RUN_TEST_IDLE
+SELECT_DR_SCAN
+CAPTURE_DR
+- 3f/011 1111 [8]
+- 3f/011 1111 [8]
+- 3f/011 1111 [8]
+- 3f/011 1111 [7]
+- 6b/110 1011 [3]
+- execute queue [8, 8, 8, 7, 3]
+11 (skipping 1 nop)
+12 (processing < 32:68:00:00:00:00:00 )
+tms [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0]
+tdi [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+tdo [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0] []
+SHIFT_DR
+EXIT1_DR
+UPDATE_DR
+ mcu: update DR cnt:32  R:0  W:0  (OCR)
+ mcu: DR: OCR
+32 (processing > 4b:03:03:3f:07:12:3f:00:00:6b:02:03:87 )
+- 4b/100 1011 [4]
+tms [1, 1, 0, 0]
+tdi [0, 0, 0, 0]
+tdo [2, 2, 2, 2] []
+RUN_TEST_IDLE
+SELECT_DR_SCAN
+SELECT_IR_SCAN
+CAPTURE_IR
+- 3f/011 1111 [8]
+- 3f/011 1111 [1]
+- 6b/110 1011 [3]
+- execute queue [8, 1, 3]
+33 (processing < 32:68:41:20:e4 )
+tms [0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0]
+tdi [0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0]
+tdo [1, 0, 0, 0, 0, 0, 1, 0, 0, 1, 1, 1] []
+SHIFT_IR
+EXIT1_IR
+UPDATE_IR
+ mcu: update IR cnt:10  R:241  W:12
+ mcu: OnCE sts:  MCLK 0 0 RESET 0 0 0 0
+ mcu: OnCE cmd:   0     0     0    |  0 0 1   0 0 1 0   OCR
+10 (processing > 4b:02:01:3f:07:07:3f:07:00:3f:07:00:3f:06:00:6b:02:03:87 )
+- 4b/100 1011 [3]
+tms [1, 0, 0]
+tdi [0, 0, 0]
+tdo [2, 2, 2] []
+RUN_TEST_IDLE
+SELECT_DR_SCAN
+CAPTURE_DR
+- 3f/011 1111 [8]
+- 3f/011 1111 [8]
+- 3f/011 1111 [8]
+- 3f/011 1111 [7]
+- 6b/110 1011 [3]
+- execute queue [8, 8, 8, 7, 3]
+11 (processing < 32:68:00:00:00:00:00 )
+tms [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0]
+tdi [1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+tdo [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0] []
+SHIFT_DR
+EXIT1_DR
+UPDATE_DR
+ mcu: update DR cnt:32  R:0  W:7  (OCR)
+ mcu: DR: OCR
+32 (processing > 4b:03:03:3f:07:31:3f:00:02:6b:02:83:87 )
+- 4b/100 1011 [4]
+tms [1, 1, 0, 0]
+tdi [0, 0, 0, 0]
+tdo [2, 2, 2, 2] []
+RUN_TEST_IDLE
+SELECT_DR_SCAN
+SELECT_IR_SCAN
+CAPTURE_IR
+- 3f/011 1111 [8]
+- 3f/011 1111 [1]
+- 6b/110 1011 [3]
+- execute queue [8, 1, 3]
+33 (processing < 32:68:41:20:e4 )
+tms [0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0]
+tdi [1, 0, 0, 0, 1, 1, 0, 0, 0, 1, 1, 1]
+tdo [1, 0, 0, 0, 0, 0, 1, 0, 0, 1, 1, 1] []
+SHIFT_IR
+EXIT1_IR
+UPDATE_IR
+ mcu: update IR cnt:10  R:241  W:231
+ mcu: OnCE sts:  MCLK 0 0 RESET 0 0 0 0
+ mcu: OnCE cmd:    RW   0     0    |  0 1 1   0 0 0 1   DBCR0
+10 (processing > 4b:02:01:3f:07:00:3f:07:00:3f:07:00:3f:06:00:6b:02:03:87 )
+- 4b/100 1011 [3]
+tms [1, 0, 0]
+tdi [0, 0, 0]
+tdo [2, 2, 2] []
+RUN_TEST_IDLE
+SELECT_DR_SCAN
+CAPTURE_DR
+- 3f/011 1111 [8]
+- 3f/011 1111 [8]
+- 3f/011 1111 [8]
+- 3f/011 1111 [7]
+- 6b/110 1011 [3]
+- execute queue [8, 8, 8, 7, 3]
+11 (processing < 32:68:00:00:00:00:00 )
+tms [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0]
+tdi [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+tdo [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0] []
+SHIFT_DR
+EXIT1_DR
+UPDATE_DR
+ mcu: update DR cnt:32  R:0  W:0  (DBCR0)
+ mcu: DR: DBCR0
+32 (processing > 4b:03:03:3f:07:31:3f:00:00:6b:02:03:87 )
+- 4b/100 1011 [4]
+tms [1, 1, 0, 0]
+tdi [0, 0, 0, 0]
+tdo [2, 2, 2, 2] []
+RUN_TEST_IDLE
+SELECT_DR_SCAN
+SELECT_IR_SCAN
+CAPTURE_IR
+- 3f/011 1111 [8]
+- 3f/011 1111 [1]
+- 6b/110 1011 [3]
+- execute queue [8, 1, 3]
+33 (processing < 32:68:41:20:e4 )
+tms [0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0]
+tdi [1, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0]
+tdo [1, 0, 0, 0, 0, 0, 1, 0, 0, 1, 1, 1] []
+SHIFT_IR
+EXIT1_IR
+UPDATE_IR
+ mcu: update IR cnt:10  R:241  W:31
+ mcu: OnCE sts:  MCLK 0 0 RESET 0 0 0 0
+ mcu: OnCE cmd:   0     0     0    |  0 1 1   0 0 0 1   DBCR0
+10 (processing > 4b:02:01:3f:07:01:3f:07:00:3f:07:00:3f:06:80:6b:02:83:87 )
+- 4b/100 1011 [3]
+tms [1, 0, 0]
+tdi [0, 0, 0]
+tdo [2, 2, 2] []
+RUN_TEST_IDLE
+SELECT_DR_SCAN
+CAPTURE_DR
+- 3f/011 1111 [8]
+- 3f/011 1111 [8]
+- 3f/011 1111 [8]
+- 3f/011 1111 [7]
+- 6b/110 1011 [3]
+- execute queue [8, 8, 8, 7, 3]
+11 (processing < 32:68:00:00:00:00:00 )
+tms [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0]
+tdi [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1]
+tdo [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0] []
+SHIFT_DR
+EXIT1_DR
+UPDATE_DR
+ mcu: update DR cnt:32  R:0  W:80000001  (DBCR0)
+ mcu: DR: DBCR0
+32 (skipping 1 nop)
+33 (processing > 82:e3:e3:80:0a:8b )
+- ACbus val:11100011  dir:11100011
+ mcu: RESET off
+- ADbus val:00001010  dir:10001011
+34 (processing > 82:e3:e3:80:0a:8b )
+- ACbus val:11100011  dir:11100011
+ mcu: RESET off
+- ADbus val:00001010  dir:10001011
+
+
