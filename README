@@ -1,4 +1,14 @@
 
+OpenOCD fork for SPC56EC 
+=========================
+(original OpenOCD READMES below)
+
+This fork is modified from calandoa's fork to specifically support the SP56EC, using Nexus access to memory by default.
+
+The flash driver uses a modified version of the MPC5XXX driver from James Murray, as this includes support for L/M/H memory.
+
+-------------------- original README ---------------------
+
 OpenOCD fork for xPC56 chips / PPC e200z0 CPUs
 ==============================================
 (original OpenOCD README below)
